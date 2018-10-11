@@ -18,6 +18,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     {
         super(context);
 
+        // Instantiate resources
+        ResourcesHandler.getInstance().addResource(R.drawable.cubypng, "cuby");
+
         getHolder().addCallback(this);
         thread = new MainThread(getHolder(), this);
         setFocusable(true);

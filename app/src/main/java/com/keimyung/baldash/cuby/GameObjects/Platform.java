@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
 
-import com.keimyung.baldash.cuby.EPlatformType;
+import com.keimyung.baldash.cuby.Misc.EPlatformType;
 import com.keimyung.baldash.cuby.Handlers.EntitiesHandler;
 
 public class Platform extends GameObject {

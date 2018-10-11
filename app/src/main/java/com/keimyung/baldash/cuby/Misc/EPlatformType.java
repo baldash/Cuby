@@ -1,4 +1,4 @@
-package com.keimyung.baldash.cuby;
+package com.keimyung.baldash.cuby.Misc;
 
 public enum EPlatformType {
     NONE,

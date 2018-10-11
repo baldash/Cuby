@@ -11,15 +11,16 @@ import com.keimyung.baldash.cuby.GameObjects.Platform;
 import com.keimyung.baldash.cuby.GameObjects.Player;
 import com.keimyung.baldash.cuby.Handlers.EntitiesHandler;
 import com.keimyung.baldash.cuby.Handlers.ResourcesHandler;
+import com.keimyung.baldash.cuby.Misc.EPlatformType;
 
-public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
+public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
     private MainThread thread;
     private Player player;
     private Platform platform;
     private Point playerPoint;
 
-    public GamePanel(Context context)
+    public GameManager(Context context)
     {
         super(context);
 

@@ -1,4 +1,4 @@
-package com.keimyung.baldash.cuby;
+package com.keimyung.baldash.cuby.GameObjects;
 
 import android.graphics.Canvas;
 

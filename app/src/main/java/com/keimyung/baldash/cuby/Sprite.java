@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
 
+import com.keimyung.baldash.cuby.Handlers.ResourcesHandler;
+
 public class Sprite {
 
     private Bitmap bmp;

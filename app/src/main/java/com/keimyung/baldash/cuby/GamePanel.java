@@ -8,6 +8,10 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.keimyung.baldash.cuby.GameObjects.Player;
+import com.keimyung.baldash.cuby.Handlers.EntitiesHandler;
+import com.keimyung.baldash.cuby.Handlers.ResourcesHandler;
+
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     private MainThread thread;
@@ -18,14 +22,19 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     {
         super(context);
 
-        // Instantiate resources
-        ResourcesHandler.getInstance().addResource(R.drawable.cubypng, "cuby");
+        initResources();
 
         getHolder().addCallback(this);
         thread = new MainThread(getHolder(), this);
         setFocusable(true);
         player = new Player(new Rect(100, 100, 200, 200), Color.YELLOW);
         playerPoint = new Point(150, 150);
+        EntitiesHandler.getInstance().addEntity("player", player);
+    }
+
+    public void initResources()
+    {
+        ResourcesHandler.getInstance().addResource(R.drawable.cubypng, "cuby");
     }
 
     @Override

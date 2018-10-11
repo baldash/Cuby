@@ -1,8 +1,10 @@
-package com.keimyung.baldash.cuby;
+package com.keimyung.baldash.cuby.GameObjects;
 
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
+
+import com.keimyung.baldash.cuby.Sprite;
 
 public class Player implements GameObject {
 

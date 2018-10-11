@@ -1,5 +1,7 @@
 package com.keimyung.baldash.cuby.Handlers;
 
+import android.graphics.Canvas;
+
 import com.keimyung.baldash.cuby.GameObjects.GameObject;
 
 import java.util.ArrayList;
@@ -18,6 +20,8 @@ public class EntitiesHandler {
         entities = new HashMap<>();
     }
 
+    ///// GETTERS
+
     public static EntitiesHandler getInstance()
     {
         return instance;
@@ -32,6 +36,8 @@ public class EntitiesHandler {
     {
         return entities.get(name);
     }
+
+    ///// METHODS
 
     public void addEntity(String name, GameObject entity)
     {
@@ -63,6 +69,24 @@ public class EntitiesHandler {
     public void remove(String name)
     {
         entities.remove(name);
+    }
+
+    public void updateAll()
+    {
+        for (GameObject value: entities.values())
+        {
+            if (value.isEnabled())
+                value.update();
+        }
+    }
+
+    public void drawAll(Canvas canvas)
+    {
+        for (GameObject value: entities.values())
+        {
+            if (value.isVisible())
+                value.draw(canvas);
+        }
     }
 
 }

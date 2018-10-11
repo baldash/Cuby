@@ -12,9 +12,9 @@ public class Sprite {
     private Point pos;
     private Rect dstRect;
 
-    public Sprite(String fileName, Point pos)
+    public Sprite(String name, Point pos)
     {
-        bmp = ResourcesHandler.getInstance().getResourceByName(fileName);
+        bmp = ResourcesHandler.getInstance().getResourceByName(name);
         this.pos = pos;
         dstRect = new Rect(pos.x, pos.y, bmp.getWidth() + pos.x, bmp.getHeight() + pos.y);
     }

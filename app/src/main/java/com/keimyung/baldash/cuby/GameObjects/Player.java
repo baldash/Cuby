@@ -6,30 +6,27 @@ import android.graphics.Rect;
 
 import com.keimyung.baldash.cuby.Sprite;
 
-public class Player implements GameObject {
+public class Player extends GameObject {
 
-    private Sprite playerSprite;
-
-    public Player(Rect rect, int color)
+    public Player(Point p)
     {
-        playerSprite = new Sprite("cuby", new Point(100, 100));
+        super("cuby", p);
     }
 
     @Override
     public void draw(Canvas canvas)
     {
-        canvas.drawBitmap(playerSprite.getBmp(), null, playerSprite.getSpriteRect(), null);
+        canvas.drawBitmap(sprite.getBmp(), null, sprite.getSpriteRect(), null);
     }
 
     @Override
     public void update()
     {
-
     }
 
     public void update(Point p)
     {
-        playerSprite.setPos(p);
+        sprite.setPos(p);
     }
 
 }

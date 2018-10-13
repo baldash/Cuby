@@ -22,11 +22,14 @@ public class Player extends GameObject {
     @Override
     public void update()
     {
+        Point playerPos = sprite.getPos();
+
+        sprite.setPos(new Point(playerPos.x, playerPos.y + 7));
     }
 
     public void update(Point p)
     {
-        sprite.setPos(p);
+        //sprite.setPos(p);
     }
 
 }

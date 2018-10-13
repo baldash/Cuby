@@ -38,7 +38,6 @@ public class Platform extends GameObject {
     @Override
     public void update()
     {
-        System.out.println("platform overlaps player: " + collidePlayer());
     }
 
 }

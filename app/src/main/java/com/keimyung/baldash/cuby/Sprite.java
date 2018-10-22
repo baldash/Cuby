@@ -1,27 +1,27 @@
 package com.keimyung.baldash.cuby;
 
 import android.graphics.Bitmap;
-import android.graphics.Point;
-import android.graphics.Rect;
+import android.graphics.PointF;
+import android.graphics.RectF;
 
 import com.keimyung.baldash.cuby.Handlers.ResourcesHandler;
 
 public class Sprite {
 
     private Bitmap bmp;
-    private Point pos;
-    private Rect dstRect;
+    private PointF pos;
+    private RectF dstRect;
 
-    public Sprite(String name, Point pos)
+    public Sprite(String name, PointF pos)
     {
         bmp = ResourcesHandler.getInstance().getResourceByName(name);
         this.pos = pos;
-        dstRect = new Rect(pos.x, pos.y, bmp.getWidth() + pos.x, bmp.getHeight() + pos.y);
+        dstRect = new RectF(pos.x, pos.y, bmp.getWidth() + pos.x, bmp.getHeight() + pos.y);
     }
 
     ///// GETTERS
 
-    public Point getPos()
+    public PointF getPos()
     {
         return pos;
     }
@@ -41,16 +41,22 @@ public class Sprite {
         return bmp;
     }
 
-    public Rect getSpriteRect()
+    public RectF getSpriteRect()
     {
         return dstRect;
     }
 
     ///// SETTERS
 
-    public void setPos(Point newPos)
+    public void setPos(PointF newPos)
     {
         pos = newPos;
+        dstRect.set(pos.x, pos.y, bmp.getWidth() + pos.x, bmp.getHeight() + pos.y);
+    }
+
+    public void setPos(float x, float y)
+    {
+        pos = new PointF(x, y);
         dstRect.set(pos.x, pos.y, bmp.getWidth() + pos.x, bmp.getHeight() + pos.y);
     }
 
@@ -59,5 +65,4 @@ public class Sprite {
         bmp = ResourcesHandler.getInstance().getResourceByName(fileName);
         dstRect.set(pos.x, pos.y, bmp.getWidth() + pos.x, bmp.getHeight() + pos.y);
     }
-
 }

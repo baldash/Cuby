@@ -2,7 +2,8 @@ package com.keimyung.baldash.cuby;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Point;
+import android.graphics.PointF;
+import android.support.v4.view.GestureDetectorCompat;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -10,6 +11,7 @@ import android.view.SurfaceView;
 import com.keimyung.baldash.cuby.GameObjects.Platform;
 import com.keimyung.baldash.cuby.GameObjects.Player;
 import com.keimyung.baldash.cuby.Handlers.EntitiesHandler;
+import com.keimyung.baldash.cuby.Handlers.InputManager;
 import com.keimyung.baldash.cuby.Handlers.ResourcesHandler;
 import com.keimyung.baldash.cuby.Misc.EPlatformType;
 
@@ -18,7 +20,8 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     private MainThread thread;
     private Player player;
     private Platform platform;
-    private Point playerPoint;
+    private GestureDetectorCompat gestureDetectorCompat;
+    private InputManager inputManager;
 
     public GameManager(Context context)
     {
@@ -26,23 +29,42 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
         initResources();
 
+        inputManager = new InputManager(this);
+        gestureDetectorCompat = new GestureDetectorCompat(context, inputManager);
+
         getHolder().addCallback(this);
         thread = new MainThread(getHolder(), this);
         setFocusable(true);
 
-        player = new Player(new Point(100, 100));
-        playerPoint = new Point(150, 150);
+        player = new Player(new PointF(300, 300));
         EntitiesHandler.getInstance().addEntity("player", player);
 
-        platform = new Platform(EPlatformType.BASIC, new Point(200, 200));
+        platform = new Platform(EPlatformType.BASIC, new PointF(200, 200));
         EntitiesHandler.getInstance().addEntity("basicPlatform", platform);
     }
+
+    ///// METHODS
 
     public void initResources()
     {
         ResourcesHandler.getInstance().addResource(R.drawable.cubypng, "cuby");
         ResourcesHandler.getInstance().addResource(R.drawable.basicplatform, "basicPlatform");
     }
+
+    public void update()
+    {
+        EntitiesHandler.getInstance().updateAll();
+    }
+
+    public void draw(Canvas canvas)
+    {
+        super.draw(canvas);
+
+        canvas.drawColor(Color.WHITE);
+        EntitiesHandler.getInstance().drawAll(canvas);
+    }
+
+    ///// OVERRIDES
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
@@ -76,27 +98,10 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_MOVE:
-                playerPoint.set((int)event.getX(), (int)event.getY());
-        }
+        gestureDetectorCompat.onTouchEvent(event);
 
         return true;
         // return super.onTouchEvent(event);
     }
 
-    public void update()
-    {
-        EntitiesHandler.getInstance().updateAll();
-        player.update(playerPoint);
-    }
-
-    public void draw(Canvas canvas)
-    {
-        super.draw(canvas);
-
-        canvas.drawColor(Color.WHITE);
-        EntitiesHandler.getInstance().drawAll(canvas);
-    }
 }

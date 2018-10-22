@@ -1,14 +1,13 @@
 package com.keimyung.baldash.cuby.GameObjects;
 
 import android.graphics.Canvas;
-import android.graphics.Point;
-import android.graphics.Rect;
+import android.graphics.PointF;
+import javax.vecmath.Vector2d;
 
-import com.keimyung.baldash.cuby.Sprite;
+public class Player extends GameObject
+{
 
-public class Player extends GameObject {
-
-    public Player(Point p)
+    public Player(PointF p)
     {
         super("cuby", p);
     }
@@ -22,14 +21,7 @@ public class Player extends GameObject {
     @Override
     public void update()
     {
-        Point playerPos = sprite.getPos();
-
-        sprite.setPos(new Point(playerPos.x, playerPos.y + 7));
-    }
-
-    public void update(Point p)
-    {
-        //sprite.setPos(p);
+        updatePos();
     }
 
 }

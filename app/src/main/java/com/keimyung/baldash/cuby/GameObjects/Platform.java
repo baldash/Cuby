@@ -1,8 +1,8 @@
 package com.keimyung.baldash.cuby.GameObjects;
 
 import android.graphics.Canvas;
-import android.graphics.Point;
-import android.graphics.Rect;
+import android.graphics.PointF;
+import android.graphics.RectF;
 
 import com.keimyung.baldash.cuby.Misc.EPlatformType;
 import com.keimyung.baldash.cuby.Handlers.EntitiesHandler;
@@ -11,7 +11,7 @@ public class Platform extends GameObject {
 
     private EPlatformType type;
 
-    public Platform(EPlatformType type, Point p)
+    public Platform(EPlatformType type, PointF p)
     {
         super("basicPlatform", p);
 
@@ -25,7 +25,7 @@ public class Platform extends GameObject {
 
     public boolean collidePlayer()
     {
-        return Rect.intersects(sprite.getSpriteRect(),
+        return RectF.intersects(sprite.getSpriteRect(),
                 EntitiesHandler.getInstance().getEntity("player").getSprite().getSpriteRect());
     }
 

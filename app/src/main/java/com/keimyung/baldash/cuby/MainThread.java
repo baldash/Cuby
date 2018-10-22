@@ -6,7 +6,7 @@ import android.view.SurfaceHolder;
 public class MainThread extends Thread {
 
     public static final int MAX_FPS = 30;
-    private double averageFPS;
+    public static double averageFPS = 30;
     private SurfaceHolder holder;
     private GameManager gameManager;
     private boolean running;
@@ -19,10 +19,26 @@ public class MainThread extends Thread {
         this.gameManager = gameManager;
     }
 
+    ///// GETTERS
+
+    public boolean getRunning()
+    {
+        return running;
+    }
+
+    public static double getDeltaTime()
+    {
+        return (averageFPS == 0 ? -1 : 1 / averageFPS);
+    }
+
+    ///// SETTERS
+
     public void setRunning(boolean running)
     {
         this.running = running;
     }
+
+    ///// OVERRIDES
 
     @Override
     public void run()

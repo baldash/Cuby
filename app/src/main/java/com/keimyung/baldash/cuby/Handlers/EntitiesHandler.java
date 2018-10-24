@@ -66,9 +66,14 @@ public class EntitiesHandler {
         return entities.containsValue(value);
     }
 
-    public void remove(String name)
+    public void removeEntity(String name)
     {
         entities.remove(name);
+    }
+
+    public void removeEntity(GameObject go)
+    {
+        entities.remove(go);
     }
 
     public void updateAll()

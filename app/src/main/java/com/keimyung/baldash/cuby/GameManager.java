@@ -8,25 +8,31 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.keimyung.baldash.cuby.GameObjects.GameObject;
 import com.keimyung.baldash.cuby.GameObjects.Platform;
 import com.keimyung.baldash.cuby.GameObjects.Player;
 import com.keimyung.baldash.cuby.Handlers.EntitiesHandler;
 import com.keimyung.baldash.cuby.Handlers.InputManager;
 import com.keimyung.baldash.cuby.Handlers.ResourcesHandler;
-import com.keimyung.baldash.cuby.Misc.Constants;
 import com.keimyung.baldash.cuby.Misc.EPlatformType;
+
+import java.util.List;
 
 import javax.vecmath.Vector2d;
 
 public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
     private MainThread thread;
-    private Player player;
-    private Platform platform;
     private GestureDetectorCompat gestureDetectorCompat;
     private InputManager inputManager;
+
+    private Player player;
+    private Platform platform;
     private int platformId = 0;
     private boolean bSwiped = false;
+
+    private Vector2d gameSpeed;
+    private double totalDistance = 0;
 
     public GameManager(Context context)
     {
@@ -34,12 +40,16 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
         initResources();
 
+        // inputs
         inputManager = new InputManager(this);
         gestureDetectorCompat = new GestureDetectorCompat(context, inputManager);
 
+        // main thread
         getHolder().addCallback(this);
         thread = new MainThread(getHolder(), this);
         setFocusable(true);
+
+        gameSpeed = new Vector2d(-80, 0);
 
         player = new Player(new PointF(250, 225));
         EntitiesHandler.getInstance().addEntity("player", player);
@@ -58,6 +68,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
     public void update()
     {
+        updateDistance();
         EntitiesHandler.getInstance().updateAll();
     }
 
@@ -79,13 +90,45 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     {
         if (!bSwiped)
         {
-            Platform newPlatform = new Platform(EPlatformType.BASIC, pos, new Vector2d(-60, 0));
+            Platform newPlatform = new Platform(EPlatformType.BASIC, pos, gameSpeed);
 
             EntitiesHandler.getInstance().addEntity("platform" + platformId, newPlatform);
             platformId++;
         }
         else
             bSwiped = false;
+    }
+
+    private void updateDistance()
+    {
+        Vector2d scaledVelocity = new Vector2d();
+
+        scaledVelocity.scale(MainThread.getDeltaTime(), gameSpeed);
+        totalDistance += scaledVelocity.x * -1;
+
+        if (totalDistance > 500 && gameSpeed.x > -130)
+            updateGameSpeed(-130);
+        else if (totalDistance > 1000 && gameSpeed.x > -180)
+            updateGameSpeed(-180);
+        else if (totalDistance > 2000 && gameSpeed.x > -230)
+            updateGameSpeed(-230);
+        else if (totalDistance > 3000 && gameSpeed.x > -300)
+            updateGameSpeed(-300);
+    }
+
+    public void updateGameSpeed(int newSpeed)
+    {
+        List<GameObject> platforms = EntitiesHandler.getInstance().getAllEntitiesOfName("platform");
+
+        gameSpeed.x = newSpeed;
+
+        if (!player.jumping())
+            player.setVelocity(new Vector2d(newSpeed, 0));
+
+        for (GameObject platform: platforms)
+        {
+            platform.setVelocity(new Vector2d(newSpeed, 0));
+        }
     }
 
     ///// OVERRIDES

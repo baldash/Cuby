@@ -14,6 +14,7 @@ public class Platform extends GameObject {
 
     private EPlatformType type;
     private Player playerInstance;
+    private boolean bPlayerIsOn = false;
 
     public Platform(EPlatformType type, PointF p, Vector2d velocity)
     {
@@ -54,6 +55,16 @@ public class Platform extends GameObject {
         return false;
     }
 
+    private void checkScreenBounds()
+    {
+        if ((sprite.getPos().x + sprite.getWidth()) < 0)
+        {
+            visible = false;
+            enabled = false;
+            EntitiesHandler.getInstance().removeEntity(this);
+        }
+    }
+
     ///// OVERRIDES
 
     @Override
@@ -65,8 +76,13 @@ public class Platform extends GameObject {
     @Override
     public void update()
     {
-        if (/*playerInstance.getJumping() && */objectIsOn(playerInstance))
+        checkScreenBounds();
+
+        if (!bPlayerIsOn && playerInstance.jumping() && objectIsOn(playerInstance))
+        {
+            bPlayerIsOn = true;
             playerInstance.onPlatform(this);
+        }
 
         updatePos();
     }

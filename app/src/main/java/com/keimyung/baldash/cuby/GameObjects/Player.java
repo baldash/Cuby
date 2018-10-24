@@ -17,7 +17,7 @@ public class Player extends GameObject
 
     ///// GETTERS
 
-    public boolean getJumping()
+    public boolean jumping()
     {
         return bJumping;
     }
@@ -28,7 +28,7 @@ public class Player extends GameObject
     {
         if (!bJumping)
         {
-            velocity.set(40, -80);
+            velocity.set(200, -100);
             gravity.set(0, 50);
 
             bJumping = true;

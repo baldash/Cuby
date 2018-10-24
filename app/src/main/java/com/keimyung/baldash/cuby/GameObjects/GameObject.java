@@ -68,6 +68,16 @@ public abstract class GameObject {
         this.enabled = enabled;
     }
 
+    public void setVelocity(Vector2d newVelocity)
+    {
+        velocity.set(newVelocity);
+    }
+
+    public void setGravity(Vector2d newGravity)
+    {
+        gravity.set(newGravity);
+    }
+
     ///// ABSTRACTS
 
     public abstract void update();

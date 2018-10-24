@@ -1,0 +1,54 @@
+#!/bin/sh
+
+BUILD_DIR="./.build"
+
+J_FLAG="-j 12"
+ARGS=""
+CLEAN=0
+
+for ARG in ${@}
+do
+    if [ "$ARG" = "--help" ]
+    then
+        echo "Usage		: $0 [--help|--clean-build] [cmake rule]"
+        echo "--help		: displays usage and exits"
+        echo "--clean-build	: re-creates the build directory, builds the library and deletes the build directory"
+        exit
+    elif [ "$ARG" = "--clean-build" ]
+    then
+	CLEAN=1
+    elif [ "$ARG" = "-j" ]
+    then
+	J_FLAG=""
+	ARGS="$ARGS $ARG"
+    else
+	ARGS="$ARGS $ARG"
+    fi
+done
+
+if [ "$J_FLAG" != "" ]
+then
+    ARGS="$ARGS $J_FLAG"
+fi
+
+if [ $CLEAN = 1 ]
+then
+    rm -rf $BUILD_DIR
+    mkdir $BUILD_DIR
+else
+    if [ ! -d "$BUILD_DIR" ]
+    then
+        mkdir $BUILD_DIR
+    fi
+fi
+
+cd $BUILD_DIR
+cmake ..
+
+make $ARGS
+cd ..
+
+if [ $CLEAN = 1 ]
+then
+    rm -rf ${BUILD_DIR}
+fi

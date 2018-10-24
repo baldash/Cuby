@@ -38,18 +38,6 @@ public class InputManager extends GestureDetector.SimpleOnGestureListener
         return super.onFling(e1, e2, velocityX, velocityY);
     }
 
-    @Override
-    public boolean onSingleTapConfirmed(MotionEvent e) {
-        switch (e.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_MOVE:
-                System.out.println("input down");
-                break;
-        }
-
-        return true;
-    }
-
     // By default this method returns false and makes the gesture detector ignore all the inputs,
     // so we have to override it that way in order to make it work
     @Override

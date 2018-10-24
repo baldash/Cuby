@@ -11,6 +11,8 @@ public class Player extends GameObject
     public Player(PointF p)
     {
         super("cuby", p);
+
+        /*gravity.set(0, 1200);*/
     }
 
     ///// GETTERS

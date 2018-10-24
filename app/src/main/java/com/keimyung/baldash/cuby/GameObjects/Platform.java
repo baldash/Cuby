@@ -1,6 +1,7 @@
 package com.keimyung.baldash.cuby.GameObjects;
 
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
@@ -23,10 +24,14 @@ public class Platform extends GameObject {
         playerInstance = (Player)EntitiesHandler.getInstance().getEntity("player");
     }
 
+    ///// GETTERS
+
     public EPlatformType getType()
     {
         return type;
     }
+
+    ///// METHODS
 
     public boolean collideObject(GameObject go)
     {
@@ -35,13 +40,21 @@ public class Platform extends GameObject {
 
     public boolean objectIsOn(GameObject go)
     {
-        PointF goPos = go.getSprite().getPos();
-        PointF platPos = sprite.getPos();
+        Point goPos = new Point((int)go.getSprite().getPos().x, (int)go.getSprite().getPos().y);
+        Point platPos = new Point((int)sprite.getPos().x, (int)sprite.getPos().y);
 
-        return ((goPos.x + go.getSprite().getWidth()) >= platPos.x &&
+        if ((goPos.x + go.getSprite().getWidth()) >= platPos.x &&
                 goPos.x <= (platPos.x + sprite.getWidth()) &&
-                (goPos.y + go.getSprite().getHeight()) == platPos.y);
+                (goPos.y + go.getSprite().getHeight()) >= platPos.y - 5 &&
+                (goPos.y + go.getSprite().getHeight()) <= platPos.y + 5)
+        {
+            go.getSprite().setPos(go.getSprite().getPos().x, sprite.getPos().y - go.getSprite().getHeight());
+            return true;
+        }
+        return false;
     }
+
+    ///// OVERRIDES
 
     @Override
     public void draw(Canvas canvas)

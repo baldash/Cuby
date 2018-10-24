@@ -13,6 +13,7 @@ import com.keimyung.baldash.cuby.GameObjects.Player;
 import com.keimyung.baldash.cuby.Handlers.EntitiesHandler;
 import com.keimyung.baldash.cuby.Handlers.InputManager;
 import com.keimyung.baldash.cuby.Handlers.ResourcesHandler;
+import com.keimyung.baldash.cuby.Misc.Constants;
 import com.keimyung.baldash.cuby.Misc.EPlatformType;
 
 import javax.vecmath.Vector2d;
@@ -24,6 +25,8 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     private Platform platform;
     private GestureDetectorCompat gestureDetectorCompat;
     private InputManager inputManager;
+    private int platformId = 0;
+    private boolean bSwiped = false;
 
     public GameManager(Context context)
     {
@@ -41,8 +44,8 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         player = new Player(new PointF(250, 225));
         EntitiesHandler.getInstance().addEntity("player", player);
 
-        platform = new Platform(EPlatformType.BASIC, new PointF(200, 300), new Vector2d(-60, 0));
-        EntitiesHandler.getInstance().addEntity("basicPlatform", platform);
+        /*platform = new Platform(EPlatformType.BASIC, new PointF(145, 479), new Vector2d(0, 0));
+        EntitiesHandler.getInstance().addEntity("basicPlatform", platform);*/
     }
 
     ///// METHODS
@@ -68,7 +71,21 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
     public void onSwipeUp(double distance, float velocity)
     {
+        bSwiped = true;
         player.doJump();
+    }
+
+    public void onInputUp(PointF pos)
+    {
+        if (!bSwiped)
+        {
+            Platform newPlatform = new Platform(EPlatformType.BASIC, pos, new Vector2d(-60, 0));
+
+            EntitiesHandler.getInstance().addEntity("platform" + platformId, newPlatform);
+            platformId++;
+        }
+        else
+            bSwiped = false;
     }
 
     ///// OVERRIDES
@@ -107,8 +124,10 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     {
         gestureDetectorCompat.onTouchEvent(event);
 
+        if (event.getAction() == MotionEvent.ACTION_UP)
+            onInputUp(new PointF(event.getX(), event.getY()));
+
         return true;
-        // return super.onTouchEvent(event);
     }
 
 }

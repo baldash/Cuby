@@ -15,6 +15,8 @@ import com.keimyung.baldash.cuby.Handlers.InputManager;
 import com.keimyung.baldash.cuby.Handlers.ResourcesHandler;
 import com.keimyung.baldash.cuby.Misc.EPlatformType;
 
+import javax.vecmath.Vector2d;
+
 public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
     private MainThread thread;
@@ -36,10 +38,10 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         thread = new MainThread(getHolder(), this);
         setFocusable(true);
 
-        player = new Player(new PointF(300, 300));
+        player = new Player(new PointF(250, 225));
         EntitiesHandler.getInstance().addEntity("player", player);
 
-        platform = new Platform(EPlatformType.BASIC, new PointF(200, 200));
+        platform = new Platform(EPlatformType.BASIC, new PointF(200, 300), new Vector2d(-60, 0));
         EntitiesHandler.getInstance().addEntity("basicPlatform", platform);
     }
 
@@ -62,6 +64,11 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
         canvas.drawColor(Color.WHITE);
         EntitiesHandler.getInstance().drawAll(canvas);
+    }
+
+    public void onSwipeUp(double distance, float velocity)
+    {
+        player.doJump();
     }
 
     ///// OVERRIDES

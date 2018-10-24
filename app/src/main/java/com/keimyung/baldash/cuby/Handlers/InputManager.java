@@ -27,7 +27,8 @@ public class InputManager extends GestureDetector.SimpleOnGestureListener
 
         if (e1.getY() - e2.getY() > Constants.SWIPE_MIN_DISTANCE
                 && Math.abs(velocityY) > Constants.SWIPE_THRESHOLD_VELOCITY) {
-            System.out.println("swipe up");
+            System.out.println("swipe up, distance: " + (e1.getY() - e2.getY()));
+            gameManager.onSwipeUp((e1.getY() - e2.getY()), velocityY);
         }
         else if (e2.getY() - e1.getY() > Constants.SWIPE_MIN_DISTANCE
                 && Math.abs(velocityY) > Constants.SWIPE_THRESHOLD_VELOCITY) {

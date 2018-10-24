@@ -46,6 +46,16 @@ public abstract class GameObject {
         return visible;
     }
 
+    public Vector2d getVelocity()
+    {
+        return velocity;
+    }
+
+    public Vector2d getGravity()
+    {
+        return gravity;
+    }
+
     ///// SETTERS
 
     public void setVisible(boolean visible)

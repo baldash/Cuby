@@ -21,6 +21,7 @@ public abstract class GameObject {
 
     protected Vector2d velocity;
     protected Vector2d gravity;
+    protected PointF prevPos;
 
     public GameObject(String name, PointF p)
     {
@@ -56,6 +57,11 @@ public abstract class GameObject {
         return gravity;
     }
 
+    public PointF getPrevPos()
+    {
+        return prevPos;
+    }
+
     ///// SETTERS
 
     public void setVisible(boolean visible)
@@ -87,15 +93,16 @@ public abstract class GameObject {
 
     public void updatePos()
     {
-        PointF playerPos = sprite.getPos();
+        PointF goPos = sprite.getPos();
         Vector2d scaledVelocity = new Vector2d();
         Vector2d scaledGravity = new Vector2d();
         double dt = MainThread.getDeltaTime();
 
+        prevPos = new PointF(goPos.x, goPos.y);
         scaledVelocity.scale(dt, velocity);
         scaledGravity.scale(dt, gravity);
 
-        sprite.setPos((float)(playerPos.x + scaledVelocity.x), (float)(playerPos.y + scaledVelocity.y));
+        sprite.setPos((float)(goPos.x + scaledVelocity.x), (float)(goPos.y + scaledVelocity.y));
         velocity.add(velocity, scaledGravity);
     }
 

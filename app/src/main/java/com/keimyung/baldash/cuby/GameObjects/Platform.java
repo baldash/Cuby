@@ -39,17 +39,18 @@ public class Platform extends GameObject {
         return RectF.intersects(sprite.getSpriteRect(), go.getSprite().getSpriteRect());
     }
 
-    public boolean objectIsOn(GameObject go)
+    public boolean playerIsOn(GameObject go)
     {
         Point goPos = new Point((int)go.getSprite().getPos().x, (int)go.getSprite().getPos().y);
+        Point goPrevPos = new Point((int)go.getPrevPos().x, (int)go.getPrevPos().y);
+        int goHeight = playerInstance.sprite.getHeight();
+        int goWidth = playerInstance.sprite.getWidth();
         Point platPos = new Point((int)sprite.getPos().x, (int)sprite.getPos().y);
 
-        if ((goPos.x + go.getSprite().getWidth()) >= platPos.x &&
-                goPos.x <= (platPos.x + sprite.getWidth()) &&
-                (goPos.y + go.getSprite().getHeight()) >= platPos.y - 5 &&
-                (goPos.y + go.getSprite().getHeight()) <= platPos.y + 5)
+        if ((goPos.x + goWidth) >= platPos.x && goPos.x <= (platPos.x + sprite.getWidth()) &&
+                (goPrevPos.y + goHeight <= platPos.y && platPos.y <= goPos.y + goHeight))
         {
-            go.getSprite().setPos(go.getSprite().getPos().x, sprite.getPos().y - go.getSprite().getHeight());
+            go.getSprite().setPos(go.getSprite().getPos().x, sprite.getPos().y - goHeight);
             return true;
         }
         return false;
@@ -78,7 +79,7 @@ public class Platform extends GameObject {
     {
         checkScreenBounds();
 
-        if (!bPlayerIsOn && playerInstance.jumping() && objectIsOn(playerInstance))
+        if (!bPlayerIsOn && playerInstance.jumping() && playerIsOn(playerInstance))
         {
             bPlayerIsOn = true;
             playerInstance.onPlatform(this);

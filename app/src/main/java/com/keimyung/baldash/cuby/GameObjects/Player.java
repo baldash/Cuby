@@ -3,16 +3,19 @@ package com.keimyung.baldash.cuby.GameObjects;
 import android.graphics.Canvas;
 import android.graphics.PointF;
 
+import com.keimyung.baldash.cuby.MainThread;
+
+import javax.vecmath.Vector2d;
+
 public class Player extends GameObject
 {
 
     private boolean bJumping = false;
+    private float jumpStrength = 3.5f;
 
     public Player(PointF p)
     {
         super("cuby", p);
-
-        /*gravity.set(0, 1200);*/
     }
 
     ///// GETTERS
@@ -28,8 +31,8 @@ public class Player extends GameObject
     {
         if (!bJumping)
         {
-            velocity.set(200, -100);
-            gravity.set(0, 50);
+            velocity.set(100, -250);
+            gravity.set(0, 120);
 
             bJumping = true;
         }
@@ -54,7 +57,25 @@ public class Player extends GameObject
     @Override
     public void update()
     {
-        updatePos();
+        if (bJumping)
+            updatePosJump();
+        else
+            updatePos();
+    }
+
+    public void updatePosJump()
+    {
+        PointF playerPos = sprite.getPos();
+        Vector2d scaledVelocity = new Vector2d();
+        Vector2d scaledGravity = new Vector2d();
+        double dt = MainThread.getDeltaTime();
+
+        prevPos = new PointF(playerPos.x, playerPos.y);
+        scaledVelocity.scale(dt * jumpStrength, velocity);
+        scaledGravity.scale(dt * jumpStrength, gravity);
+
+        sprite.setPos((float)(playerPos.x + scaledVelocity.x), (float)(playerPos.y + scaledVelocity.y));
+        velocity.add(velocity, scaledGravity);
     }
 
 }

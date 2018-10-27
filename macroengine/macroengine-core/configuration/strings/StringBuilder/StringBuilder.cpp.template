@@ -1,0 +1,191 @@
+/*
+** StringBuilder.cpp for macroengine in /home/sylvain/Documents/projets/perso/C++/macroengine/macroengine/utl/strings/StringBuilder/StringBuilder.cpp
+**
+** Made by Sylvain CHAUGNY
+** Login   <sylvain.chaugny@epitech.eu>
+**
+** Started on  Thu Feb 15 18:43:59 2018 Sylvain CHAUGNY
+*/
+
+#include			<algorithm>
+#include			<cstdarg>
+#include			"macroengine-core/utl/exceptions.hpp"
+#include			"macroengine-core/parser/ini/IniParser/IniParser.hpp"
+#include			"macroengine-core/file/File/File.hpp"
+#include			"macroengine-core/configuration/configuration.hpp"
+#include			"StringBuilder.hpp"
+
+macroengine::configuration::strings::StringBuilder::StringBuilder() :
+  Object("StringBuilder"),
+  _strings(),
+  _config_file(Environment.getResourcesDirectory() + "/" + MACROENGINE_VAR_DEFAULT_STRINGS_FILE) {
+  _flags = {
+    {"%s",  &macroengine::configuration::strings::StringBuilder::parseSFlag},
+    {"%cs", &macroengine::configuration::strings::StringBuilder::parseCSFlag},
+    {"%ld", &macroengine::configuration::strings::StringBuilder::parseLDFlag},
+    {"%f",  &macroengine::configuration::strings::StringBuilder::parseFFlag},
+    {"%d",  &macroengine::configuration::strings::StringBuilder::parseDFlag},
+  };
+
+  // STRINGS FINDER WRITING HOOK
+}
+
+std::string			macroengine::configuration::strings::StringBuilder::build(std::string const &id, ...) {
+  va_list			ap;
+  std::string			str;
+  int				flag_id;
+
+  va_start(ap, id);
+  if (_strings.find(id) == _strings.end()) {
+    error(build("core_unknown_string_id", id));
+    return "";
+  }
+
+  str = _strings[id].str;
+  for (int i = 0; i < _strings[id].nb_params; i++) {
+    flag_id = getNextFlag(str);
+    if (flag_id == -1) {
+      throw exception::BadFormattedStringException(build("core_bad_formatted_string", id));
+    } else {
+      (this->*_flags[flag_id].second)(str, ap);
+    }
+  }
+  return str;
+}
+
+void				macroengine::configuration::strings::StringBuilder::addString(std::string const &id, std::string const &str, int nb_params) {
+  _strings[id].str = str;
+  _strings[id].nb_params = nb_params;
+}
+
+void				macroengine::configuration::strings::StringBuilder::dump() {
+}
+
+int				macroengine::configuration::strings::StringBuilder::configure()
+{
+  file::File			file;
+  parser::ini::IniParser	parser;
+
+  log(build("core_retrieving_string_file_data", _config_file));
+  file.setFileName(_config_file);
+  file.open();
+  if (!file.good() || file.read()) {
+    warning(build("core_strings_file_not_found", _config_file));
+    return 0;
+  }
+  if (parser.parseFromRawContent(file.getContent())) {
+    error(build("core_fail_retrieving_string_file_data", _config_file));
+    return 1;
+  }
+  for (auto &&scope: parser["STRINGS"].getContent()) {
+    log("  " + build("core_string_file_found_line", scope.first));
+    _strings[scope.first].str = scope.second;
+    _strings[scope.first].nb_params = static_cast<int>(getNbParams(scope.second));
+  }
+  log(build("core_success"));
+  return 0;
+}
+
+int				macroengine::configuration::strings::StringBuilder::configure(macroengine::parser::ini::IniParser &conf) {
+  _config_file = Environment.getResourcesDirectory() + "/";
+  if (conf["CONFIGURATION"].keyExists("strings_file")) {
+    _config_file += conf["CONFIGURATION"]["strings_file"];
+  } else {
+    _config_file += MACROENGINE_VAR_DEFAULT_STRINGS_FILE;
+  }
+  return configure();
+}
+
+size_t				macroengine::configuration::strings::StringBuilder::getNbParams(std::string const &str) {
+  std::string			tmp;
+  size_t			nb;
+  int				i;
+
+  nb = 0;
+  tmp = str;
+  while ((i = getNextFlag(tmp)) != -1) {
+    tmp = tmp.substr(tmp.find(_flags[i].first) + 1);
+    nb++;
+  }
+  return nb;
+}
+
+int				macroengine::configuration::strings::StringBuilder::getNextFlag(std::string const &str) {
+  std::pair<int, long>		min;
+
+  min.first = 0;
+  min.second = str.find(_flags[0].first);
+  for (unsigned int i = 0; i < _flags.size(); i++) {
+    long tmp = str.find(_flags[i].first);
+    if ((min.second == -1 || tmp < min.second) && tmp != -1) {
+      min.first = i;
+      min.second = tmp;
+    }
+  }
+  return (min.second == -1) ? -1 : min.first;
+}
+
+void				macroengine::configuration::strings::StringBuilder::parseSFlag(std::string &str, va_list &ap) {
+  unsigned long			pos;
+  std::string			tmp;
+  std::string			remaining;
+
+  pos = str.find("%s");
+  getNewParam<std::string, std::string>(ap, tmp);
+  remaining = str.substr(pos + std::string("%s").length());
+  str.replace(pos, pos + std::string("%s").length(), tmp);
+  str.erase(pos + tmp.length());
+  str.append(remaining);
+}
+
+void				macroengine::configuration::strings::StringBuilder::parseFFlag(std::string &str, va_list &ap) {
+  unsigned long			pos;
+  double			tmp;
+  std::string			remaining;
+
+  pos = str.find("%f");
+  getNewParam<double, double>(ap, tmp);
+  remaining = str.substr(pos + std::string("%f").length());
+  str.replace(pos, pos + std::string("%f").length(), std::to_string(tmp));
+  str.erase(pos + std::to_string(tmp).length());
+  str.append(remaining);
+}
+
+void				macroengine::configuration::strings::StringBuilder::parseLDFlag(std::string &str, va_list &ap) {
+  unsigned long			pos;
+  long				tmp;
+  std::string			remaining;
+
+  pos = str.find("%ld");
+  getNewParam<long, long>(ap, tmp);
+  remaining = str.substr(pos + std::string("%ld").length());
+  str.replace(pos, pos + std::string("%ld").length(), std::to_string(tmp));
+  str.erase(pos + std::to_string(tmp).length());
+  str.append(remaining);
+}
+
+void				macroengine::configuration::strings::StringBuilder::parseDFlag(std::string &str, va_list &ap) {
+  unsigned long			pos;
+  int				tmp;
+  std::string			remaining;
+
+  pos = str.find("%d");
+  getNewParam<int, int>(ap, tmp);
+  remaining = str.substr(pos + std::string("%d").length());
+  str.replace(pos, pos + std::string("%d").length(), std::to_string(tmp));
+  str.erase(pos + std::to_string(tmp).length());
+  str.append(remaining);
+}
+
+void				macroengine::configuration::strings::StringBuilder::parseCSFlag(std::string &str, va_list &ap) {
+  unsigned long			pos;
+  std::string			tmp;
+  std::string			remaining;
+
+  pos = str.find("%cs");
+  getNewParam<std::string, const char *>(ap, tmp);
+  remaining = str.substr(pos + std::string("%cs").length());
+  str.replace(pos, pos + std::string("%cs").length(), tmp);
+  str.erase(pos + tmp.length());
+  str.append(remaining);
+}

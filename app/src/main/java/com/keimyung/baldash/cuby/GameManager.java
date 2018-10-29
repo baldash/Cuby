@@ -27,9 +27,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     private InputManager inputManager;
 
     private Player player;
-    private Platform platform;
     private int platformId = 0;
-    private boolean bSwiped = false;
 
     private Vector2d gameSpeed;
     private double totalDistance = 0;
@@ -53,9 +51,13 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
         player = new Player(new PointF(250, 225));
         EntitiesHandler.getInstance().addEntity("player", player);
+    }
 
-        /*platform = new Platform(EPlatformType.BASIC, new PointF(145, 479), new Vector2d(0, 0));
-        EntitiesHandler.getInstance().addEntity("basicPlatform", platform);*/
+    ///// GETTERS
+
+    public Player getPlayer()
+    {
+        return player;
     }
 
     ///// METHODS
@@ -80,23 +82,15 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         EntitiesHandler.getInstance().drawAll(canvas);
     }
 
-    public void onSwipeUp(double distance, float velocity)
-    {
-        bSwiped = true;
-        player.doJump();
-    }
-
     public void onInputUp(PointF pos)
     {
-        if (!bSwiped)
+        if (pos.x > 330)
         {
             Platform newPlatform = new Platform(EPlatformType.BASIC, pos, gameSpeed);
 
             EntitiesHandler.getInstance().addEntity("platform" + platformId, newPlatform);
             platformId++;
         }
-        else
-            bSwiped = false;
     }
 
     private void updateDistance()

@@ -1,4 +1,5 @@
 package com.keimyung.baldash.cuby;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -13,6 +14,7 @@ import com.keimyung.baldash.cuby.GameObjects.Platform;
 import com.keimyung.baldash.cuby.GameObjects.Player;
 import com.keimyung.baldash.cuby.Handlers.EntitiesHandler;
 import com.keimyung.baldash.cuby.Handlers.InputManager;
+import com.keimyung.baldash.cuby.Handlers.PlatformHandler;
 import com.keimyung.baldash.cuby.Handlers.ResourcesHandler;
 import com.keimyung.baldash.cuby.Misc.EPlatformType;
 
@@ -25,6 +27,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     private MainThread thread;
     private GestureDetectorCompat gestureDetectorCompat;
     private InputManager inputManager;
+    private PlatformHandler platformHandler;
 
     private Player player;
     private int platformId = 0;
@@ -41,6 +44,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         // inputs
         inputManager = new InputManager(this);
         gestureDetectorCompat = new GestureDetectorCompat(context, inputManager);
+        platformHandler = new PlatformHandler();
 
         // main thread
         getHolder().addCallback(this);
@@ -70,6 +74,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
     public void update()
     {
+        platformHandler.update();
         updateDistance();
         EntitiesHandler.getInstance().updateAll();
     }
@@ -86,10 +91,11 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     {
         if (pos.x > 330)
         {
-            Platform newPlatform = new Platform(EPlatformType.BASIC, pos, gameSpeed);
+            //Platform newPlatform = new Platform(EPlatformType.BASIC, pos, gameSpeed);
+            platformHandler.placePlatform(pos, gameSpeed);
 
-            EntitiesHandler.getInstance().addEntity("platform" + platformId, newPlatform);
-            platformId++;
+            /*EntitiesHandler.getInstance().addEntity("platform" + platformId, newPlatform);
+            platformId++;*/
         }
     }
 

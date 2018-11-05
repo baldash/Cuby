@@ -18,8 +18,7 @@ import com.keimyung.baldash.cuby.Handlers.EntitiesHandler;
 import com.keimyung.baldash.cuby.Handlers.InputManager;
 import com.keimyung.baldash.cuby.Handlers.PlatformHandler;
 import com.keimyung.baldash.cuby.Handlers.ResourcesHandler;
-
-import org.w3c.dom.Text;
+import com.keimyung.baldash.cuby.Misc.EPlatformType;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -41,7 +40,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     private boolean bStarted = false;
 
     private TextView scoreText;
-    private TextView cooldownText;
+    private TextView coolDownText;
     private ImageView platformIcon;
 
     public GameManager(Context context)
@@ -85,7 +84,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     public void setHUDElements(TextView scoreText, TextView cooldownText, ImageView platformIcon)
     {
         this.scoreText = scoreText;
-        this.cooldownText = cooldownText;
+        this.coolDownText = cooldownText;
         this.platformIcon = platformIcon;
     }
 
@@ -103,7 +102,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         {
             platformHandler.update();
             updateDistance();
-            updateCooldownText();
+            updateCoolDownText();
             EntitiesHandler.getInstance().updateAll();
         }
     }
@@ -119,7 +118,10 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     public void onInputUp(PointF pos)
     {
         if (pos.x > 330)
+        {
             platformHandler.placePlatform(pos, gameSpeed);
+            updatePlatformIcon();
+        }
     }
 
     private void updateDistance()
@@ -156,7 +158,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    public void updateScoreText()
+    private void updateScoreText()
     {
         gameActivity.runOnUiThread(new Runnable() {
             @Override
@@ -166,17 +168,48 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         });
     }
 
-    private void updateCooldownText()
+    private void updateCoolDownText()
     {
         gameActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (platformHandler.getCoolDown() == 0)
-                    cooldownText.setVisibility(INVISIBLE);
+                    coolDownText.setVisibility(INVISIBLE);
                 else
                 {
-                    cooldownText.setVisibility(VISIBLE);
-                    cooldownText.setText(new DecimalFormat("#.#").format(platformHandler.getCoolDown()));
+                    coolDownText.setVisibility(VISIBLE);
+                    coolDownText.setText(new DecimalFormat("#.#").format(platformHandler.getCoolDown()));
+                }
+            }
+        });
+    }
+
+    private void updatePlatformIcon()
+    {
+        gameActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                EPlatformType nextPlatformType = platformHandler.getNextPlatformType();
+
+                if (platformIcon.getVisibility() == INVISIBLE)
+                    togglePlatformIcon(true);
+
+                switch (nextPlatformType)
+                {
+                    case BASIC:
+                        platformIcon.setImageResource(R.drawable.basicplatform);
+                        break;
+                    case MOVING_H:
+                        platformIcon.setImageResource(R.drawable.moving_h_platform);
+                        break;
+                    case QUICK:
+                        platformIcon.setImageResource(R.drawable.quick_platform);
+                        break;
+                    case GHOST:
+                        platformIcon.setImageResource(R.drawable.ghost_platform);
+                        break;
+                    case NONE:
+                        togglePlatformIcon(false);
                 }
             }
         });

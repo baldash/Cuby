@@ -1,9 +1,21 @@
 package com.keimyung.baldash.cuby.Misc;
 
-public enum EPlatformType {
+import java.util.Random;
+
+public enum EPlatformType
+{
     NONE,
     BASIC,
-    MOVING_LR,
-    MOVING_TD,
-    GHOST
+    MOVING_H,
+    GHOST,
+    QUICK;
+
+    private static final EPlatformType[] VALUES = values();
+    private static final int SIZE = VALUES.length;
+    private static final Random RANDOM = new Random();
+
+    public static EPlatformType getRandomType() {
+
+        return VALUES[1 + RANDOM.nextInt(SIZE - 1)];
+    }
 }

@@ -17,15 +17,15 @@ import android.widget.TextView;
 import com.keimyung.baldash.cuby.Handlers.ResourcesHandler;
 import com.keimyung.baldash.cuby.Misc.Constants;
 
-public class MainActivity extends Activity {
-
+public class MainActivity extends Activity
+{
     GameManager gameManager; // game surface
     RelativeLayout relativeLayout; // widgets surface (buttons)
     FrameLayout frameLayout; // holder for both game and relative layouts
 
     Button jumpButton;
     TextView scoreText;
-    TextView cooldownText;
+    TextView coolDownText;
     ImageView platformPlaceholder;
     ImageView platformIcon;
 
@@ -39,7 +39,7 @@ public class MainActivity extends Activity {
         initLayouts();
 
         setContentView(frameLayout);
-        gameManager.setHUDElements(scoreText, cooldownText, platformIcon);
+        gameManager.setHUDElements(scoreText, coolDownText, platformIcon);
 
         jumpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,7 +68,7 @@ public class MainActivity extends Activity {
     {
         jumpButton = new Button(this);
         scoreText = new TextView(this);
-        cooldownText = new TextView(this);
+        coolDownText = new TextView(this);
         platformIcon = new ImageView(this);
         platformPlaceholder = new ImageView(this);
 
@@ -84,10 +84,10 @@ public class MainActivity extends Activity {
         scoreText.setTextSize(25);
         scoreText.setTextColor(Color.BLUE);
         
-        cooldownText.setId(R.id.countDownTextId);
-        cooldownText.setText("0");
-        cooldownText.setTextSize(25);
-        cooldownText.setTextColor(Color.BLUE);
+        coolDownText.setId(R.id.countDownTextId);
+        coolDownText.setText("0");
+        coolDownText.setTextSize(25);
+        coolDownText.setTextColor(Color.BLUE);
 
         platformPlaceholder.setId(R.id.platformPlaceholderId);
         platformPlaceholder.setImageResource(R.drawable.platform_placeholder);
@@ -108,7 +108,7 @@ public class MainActivity extends Activity {
         relativeLayout.addView(scoreText);
         relativeLayout.addView(platformIcon);
         relativeLayout.addView(platformPlaceholder);
-        relativeLayout.addView(cooldownText);
+        relativeLayout.addView(coolDownText);
 
         buttonParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         buttonParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -130,7 +130,7 @@ public class MainActivity extends Activity {
         coolDownTextParams.addRule(RelativeLayout.RIGHT_OF, R.id.platformPlaceholderId);
         coolDownTextParams.addRule(RelativeLayout.CENTER_VERTICAL, R.id.platformPlaceholderId);
         coolDownTextParams.setMargins(20, 30, 0, 0);
-        cooldownText.setLayoutParams(coolDownTextParams);
+        coolDownText.setLayoutParams(coolDownTextParams);
 
         platformIconParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         platformIconParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);

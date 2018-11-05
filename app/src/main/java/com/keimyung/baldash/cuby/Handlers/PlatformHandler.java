@@ -22,7 +22,7 @@ public class PlatformHandler
         return coolDown;
     }
 
-    public EPlatformType getnextPlatformType()
+    public EPlatformType getNextPlatformType()
     {
         return nextPlatformType;
     }
@@ -54,9 +54,8 @@ public class PlatformHandler
         }
     }
 
-    public void generateNextPlatformType()
+    private void generateNextPlatformType()
     {
-        // random to determine next platform type depending on difficulty
-        nextPlatformType = EPlatformType.BASIC;
+        nextPlatformType = EPlatformType.getRandomType();
     }
 }

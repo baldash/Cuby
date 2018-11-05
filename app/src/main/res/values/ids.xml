@@ -4,4 +4,5 @@
     <item name="scoreTextId" type="id" />
     <item name="countDownTextId" type="id" />
     <item name="nexPlatformIconId" type="id" />
+    <item name="platformPlaceholderId" type="id" />
 </resources>

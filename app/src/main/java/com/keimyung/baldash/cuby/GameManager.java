@@ -9,6 +9,7 @@ import android.support.v4.view.GestureDetectorCompat;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.keimyung.baldash.cuby.GameObjects.GameObject;
@@ -41,6 +42,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
     private TextView scoreText;
     private TextView cooldownText;
+    private ImageView platformIcon;
 
     public GameManager(Context context)
     {
@@ -80,10 +82,11 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
     ///// SETTERS
 
-    public void setHUDElements(TextView scoreText, TextView cooldownText)
+    public void setHUDElements(TextView scoreText, TextView cooldownText, ImageView platformIcon)
     {
         this.scoreText = scoreText;
         this.cooldownText = cooldownText;
+        this.platformIcon = platformIcon;
     }
 
     ///// METHODS

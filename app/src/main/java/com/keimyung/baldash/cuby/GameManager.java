@@ -103,6 +103,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         {
             platformHandler.update();
             updateDistance();
+            updateCooldownText();
             EntitiesHandler.getInstance().updateAll();
         }
     }
@@ -184,11 +185,17 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     public void startGame()
     {
         bStarted = true;
+        togglePlatformIcon(true);
     }
 
     public void stopGame()
     {
         bStarted = false;
+    }
+
+    public void togglePlatformIcon(boolean visible)
+    {
+        platformIcon.setVisibility(visible ? VISIBLE : INVISIBLE);
     }
 
     ///// OVERRIDES

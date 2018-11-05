@@ -81,12 +81,12 @@ public class MainActivity extends Activity {
 
         scoreText.setId(R.id.scoreTextId);
         scoreText.setText("0");
-        scoreText.setTextSize(22);
+        scoreText.setTextSize(25);
         scoreText.setTextColor(Color.BLUE);
         
         cooldownText.setId(R.id.countDownTextId);
         cooldownText.setText("0");
-        cooldownText.setTextSize(22);
+        cooldownText.setTextSize(25);
         cooldownText.setTextColor(Color.BLUE);
 
         platformPlaceholder.setId(R.id.platformPlaceholderId);
@@ -117,6 +117,7 @@ public class MainActivity extends Activity {
 
         scoreTextParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         scoreTextParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        scoreTextParams.setMargins(0, 30, 10, 0);
         scoreText.setLayoutParams(scoreTextParams);
 
         platformPlaceholderParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
@@ -128,6 +129,7 @@ public class MainActivity extends Activity {
         coolDownTextParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         coolDownTextParams.addRule(RelativeLayout.RIGHT_OF, R.id.platformPlaceholderId);
         coolDownTextParams.addRule(RelativeLayout.CENTER_VERTICAL, R.id.platformPlaceholderId);
+        coolDownTextParams.setMargins(20, 30, 0, 0);
         cooldownText.setLayoutParams(coolDownTextParams);
 
         platformIconParams.addRule(RelativeLayout.CENTER_HORIZONTAL);

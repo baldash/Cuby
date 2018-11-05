@@ -1,5 +1,6 @@
 package com.keimyung.baldash.cuby;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -8,16 +9,18 @@ import android.support.v4.view.GestureDetectorCompat;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.TextView;
 
 import com.keimyung.baldash.cuby.GameObjects.GameObject;
-import com.keimyung.baldash.cuby.GameObjects.Platform;
 import com.keimyung.baldash.cuby.GameObjects.Player;
 import com.keimyung.baldash.cuby.Handlers.EntitiesHandler;
 import com.keimyung.baldash.cuby.Handlers.InputManager;
 import com.keimyung.baldash.cuby.Handlers.PlatformHandler;
 import com.keimyung.baldash.cuby.Handlers.ResourcesHandler;
-import com.keimyung.baldash.cuby.Misc.EPlatformType;
 
+import org.w3c.dom.Text;
+
+import java.text.DecimalFormat;
 import java.util.List;
 
 import javax.vecmath.Vector2d;
@@ -28,18 +31,24 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     private GestureDetectorCompat gestureDetectorCompat;
     private InputManager inputManager;
     private PlatformHandler platformHandler;
+    private Activity gameActivity;
 
     private Player player;
-    private int platformId = 0;
 
     private Vector2d gameSpeed;
     private double totalDistance = 0;
+    private boolean bStarted = false;
+
+    private TextView scoreText;
+    private TextView cooldownText;
 
     public GameManager(Context context)
     {
         super(context);
 
         initResources();
+
+        gameActivity = (Activity)context;
 
         // inputs
         inputManager = new InputManager(this);
@@ -64,6 +73,19 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         return player;
     }
 
+    public boolean gameStarted()
+    {
+        return bStarted;
+    }
+
+    ///// SETTERS
+
+    public void setHUDElements(TextView scoreText, TextView cooldownText)
+    {
+        this.scoreText = scoreText;
+        this.cooldownText = cooldownText;
+    }
+
     ///// METHODS
 
     public void initResources()
@@ -74,9 +96,12 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
     public void update()
     {
-        platformHandler.update();
-        updateDistance();
-        EntitiesHandler.getInstance().updateAll();
+        if (bStarted)
+        {
+            platformHandler.update();
+            updateDistance();
+            EntitiesHandler.getInstance().updateAll();
+        }
     }
 
     public void draw(Canvas canvas)
@@ -90,13 +115,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     public void onInputUp(PointF pos)
     {
         if (pos.x > 330)
-        {
-            //Platform newPlatform = new Platform(EPlatformType.BASIC, pos, gameSpeed);
             platformHandler.placePlatform(pos, gameSpeed);
-
-            /*EntitiesHandler.getInstance().addEntity("platform" + platformId, newPlatform);
-            platformId++;*/
-        }
     }
 
     private void updateDistance()
@@ -114,6 +133,8 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
             updateGameSpeed(-230);
         else if (totalDistance > 3000 && gameSpeed.x > -300)
             updateGameSpeed(-300);
+
+        updateScoreText();
     }
 
     public void updateGameSpeed(int newSpeed)
@@ -129,6 +150,42 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         {
             platform.setVelocity(new Vector2d(newSpeed, 0));
         }
+    }
+
+    public void updateScoreText()
+    {
+        gameActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                scoreText.setText(new DecimalFormat("#").format(totalDistance));
+            }
+        });
+    }
+
+    private void updateCooldownText()
+    {
+        gameActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (platformHandler.getCoolDown() == 0)
+                    cooldownText.setVisibility(INVISIBLE);
+                else
+                {
+                    cooldownText.setVisibility(VISIBLE);
+                    cooldownText.setText(new DecimalFormat("#.#").format(platformHandler.getCoolDown()));
+                }
+            }
+        });
+    }
+
+    public void startGame()
+    {
+        bStarted = true;
+    }
+
+    public void stopGame()
+    {
+        bStarted = false;
     }
 
     ///// OVERRIDES
@@ -165,10 +222,13 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
-        gestureDetectorCompat.onTouchEvent(event);
+        if (bStarted)
+        {
+            gestureDetectorCompat.onTouchEvent(event);
 
-        if (event.getAction() == MotionEvent.ACTION_UP)
-            onInputUp(new PointF(event.getX(), event.getY()));
+            if (event.getAction() == MotionEvent.ACTION_UP)
+                onInputUp(new PointF(event.getX(), event.getY()));
+        }
 
         return true;
     }

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="jumpButtonId" type="id" />
+    <item name="scoreTextId" type="id" />
+    <item name="countDownTextId" type="id" />
+    <item name="nexPlatformIconId" type="id" />
 </resources>

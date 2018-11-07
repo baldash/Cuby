@@ -42,14 +42,17 @@ public class Platform extends GameObject {
             case BASIC:
                 sprite.setSprite("basic-platform");
                 break;
-            case MOVING_H:
-                sprite.setSprite("moving-h-platform");
+            case MOVING_V:
+                sprite.setSprite("moving-v-platform");
                 break;
             case GHOST:
                 sprite.setSprite("ghost-platform");
                 break;
             case QUICK:
                 sprite.setSprite("quick-platform");
+                break;
+            case JUMPING:
+                sprite.setSprite("jumping-platform");
                 break;
         }
     }
@@ -104,6 +107,9 @@ public class Platform extends GameObject {
             bPlayerIsOn = true;
             playerInstance.onPlatform(this);
         }
+
+        if (playerInstance.jumping())
+            bPlayerIsOn = false;
 
         updatePos();
     }

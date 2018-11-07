@@ -6,9 +6,10 @@ public enum EPlatformType
 {
     NONE,
     BASIC,
-    MOVING_H,
+    MOVING_V,
     GHOST,
-    QUICK;
+    QUICK,
+    JUMPING;
 
     private static final EPlatformType[] VALUES = values();
     private static final int SIZE = VALUES.length;

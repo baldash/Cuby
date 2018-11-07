@@ -94,9 +94,10 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     {
         ResourcesHandler.getInstance().addResource(R.drawable.cubypng, "cuby");
         ResourcesHandler.getInstance().addResource(R.drawable.basicplatform, "basic-platform");
-        ResourcesHandler.getInstance().addResource(R.drawable.moving_h_platform, "moving-h-platform");
+        ResourcesHandler.getInstance().addResource(R.drawable.moving_v_platform, "moving-v-platform");
         ResourcesHandler.getInstance().addResource(R.drawable.ghost_platform, "ghost-platform");
         ResourcesHandler.getInstance().addResource(R.drawable.quick_platform, "quick-platform");
+        ResourcesHandler.getInstance().addResource(R.drawable.jumping_platform, "jumping-platform");
     }
 
     public void update()
@@ -202,14 +203,17 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
                     case BASIC:
                         platformIcon.setImageResource(R.drawable.basicplatform);
                         break;
-                    case MOVING_H:
-                        platformIcon.setImageResource(R.drawable.moving_h_platform);
+                    case MOVING_V:
+                        platformIcon.setImageResource(R.drawable.moving_v_platform);
                         break;
                     case QUICK:
                         platformIcon.setImageResource(R.drawable.quick_platform);
                         break;
                     case GHOST:
                         platformIcon.setImageResource(R.drawable.ghost_platform);
+                        break;
+                    case JUMPING:
+                        platformIcon.setImageResource(R.drawable.jumping_platform);
                         break;
                     case NONE:
                         togglePlatformIcon(false);

@@ -1,5 +1,7 @@
 package com.keimyung.baldash.cuby.GameObjects;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.PointF;
 
 import com.keimyung.baldash.cuby.Handlers.EntitiesHandler;
@@ -11,14 +13,17 @@ import javax.vecmath.Vector2d;
 public class GhostPlatform extends Platform
 {
 
-    private float lifeTime = 1.3f;
+    private float maxLifeTime = 1.3f;
+    private float lifeTime;
 
     public GhostPlatform(PointF p, Vector2d velocity)
     {
         super(EPlatformType.GHOST, p, velocity);
+
+        lifeTime = maxLifeTime;
     }
 
-    ///// METHODS
+    ///// OVERRIDES
 
     @Override
     public void update()
@@ -34,5 +39,19 @@ public class GhostPlatform extends Platform
         }
         else if (bPlayerIsOn)
             lifeTime -= MainThread.getDeltaTime();
+    }
+
+    @Override
+    public void draw(Canvas canvas)
+    {
+        Paint paint = new Paint();
+
+        if (lifeTime != maxLifeTime)
+        {
+            paint.setAlpha((int)(lifeTime / maxLifeTime * 100));
+            canvas.drawBitmap(sprite.getBmp(), null, sprite.getSpriteRect(), paint);
+        }
+        else
+            canvas.drawBitmap(sprite.getBmp(), null, sprite.getSpriteRect(), null);
     }
 }

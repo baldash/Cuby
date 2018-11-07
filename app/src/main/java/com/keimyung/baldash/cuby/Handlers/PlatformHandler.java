@@ -5,6 +5,7 @@ import android.graphics.PointF;
 import com.keimyung.baldash.cuby.GameObjects.GhostPlatform;
 import com.keimyung.baldash.cuby.GameObjects.JumpingPlatform;
 import com.keimyung.baldash.cuby.GameObjects.Platform;
+import com.keimyung.baldash.cuby.GameObjects.QuickPlatform;
 import com.keimyung.baldash.cuby.MainThread;
 import com.keimyung.baldash.cuby.Misc.EPlatformType;
 
@@ -74,7 +75,7 @@ public class PlatformHandler
                 EntitiesHandler.getInstance().addEntity("platform " + platformID, new Platform(nextPlatformType, pos, speed));
                 break;
             case QUICK:
-                EntitiesHandler.getInstance().addEntity("platform " + platformID, new Platform(nextPlatformType, pos, speed));
+                EntitiesHandler.getInstance().addEntity("platform " + platformID, new QuickPlatform(pos, speed));
                 break;
             case JUMPING:
                 EntitiesHandler.getInstance().addEntity("platform " + platformID, new JumpingPlatform(pos, speed));

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.keimyung.baldash.cuby.GameObjects.GameObject;
 import com.keimyung.baldash.cuby.GameObjects.Player;
+import com.keimyung.baldash.cuby.GameObjects.StartPlatform;
 import com.keimyung.baldash.cuby.Handlers.EntitiesHandler;
 import com.keimyung.baldash.cuby.Handlers.InputManager;
 import com.keimyung.baldash.cuby.Handlers.PlatformHandler;
@@ -63,8 +64,12 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
         gameSpeed = new Vector2d(-80, 0);
 
-        player = new Player(new PointF(250, 225));
+        // create player and start platform
+        player = new Player(new PointF(75, 425));
         EntitiesHandler.getInstance().addEntity("player", player);
+
+        StartPlatform startPlatform = new StartPlatform(new PointF(0, 500), new Vector2d(0, 0));
+        EntitiesHandler.getInstance().addEntity("start-platform", startPlatform);
     }
 
     ///// GETTERS

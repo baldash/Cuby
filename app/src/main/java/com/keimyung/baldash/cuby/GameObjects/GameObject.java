@@ -23,9 +23,9 @@ public abstract class GameObject {
     protected Vector2d gravity;
     protected PointF prevPos;
 
-    public GameObject(String name, PointF p)
+    public GameObject(PointF p)
     {
-        sprite = new Sprite(name, p);
+        sprite = new Sprite(p);
         velocity = new Vector2d();
         gravity = new Vector2d();
     }

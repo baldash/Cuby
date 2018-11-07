@@ -12,6 +12,11 @@ public class Sprite {
     private PointF pos;
     private RectF dstRect;
 
+    public Sprite(PointF pos)
+    {
+        this.pos = pos;
+    }
+
     public Sprite(String name, PointF pos)
     {
         bmp = ResourcesHandler.getInstance().getResourceByName(name);
@@ -47,6 +52,12 @@ public class Sprite {
     }
 
     ///// SETTERS
+
+    public void setSprite(String spriteName)
+    {
+        bmp = ResourcesHandler.getInstance().getResourceByName(spriteName);
+        dstRect = new RectF(pos.x, pos.y, bmp.getWidth() + pos.x, bmp.getHeight() + pos.y);
+    }
 
     public void setPos(PointF newPos)
     {

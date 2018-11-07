@@ -12,15 +12,16 @@ import javax.vecmath.Vector2d;
 
 public class Platform extends GameObject {
 
-    private EPlatformType type;
-    private Player playerInstance;
-    private boolean bPlayerIsOn = false;
+    protected EPlatformType type;
+    protected Player playerInstance;
+    protected boolean bPlayerIsOn = false;
 
     public Platform(EPlatformType type, PointF p, Vector2d velocity)
     {
-        super("basicPlatform", p);
+        super(p);
 
         this.type = type;
+        initSprite();
         this.velocity.set(velocity);
         playerInstance = (Player)EntitiesHandler.getInstance().getEntity("player");
     }
@@ -33,6 +34,25 @@ public class Platform extends GameObject {
     }
 
     ///// METHODS
+
+    private void initSprite()
+    {
+        switch (type)
+        {
+            case BASIC:
+                sprite.setSprite("basic-platform");
+                break;
+            case MOVING_H:
+                sprite.setSprite("moving-h-platform");
+                break;
+            case GHOST:
+                sprite.setSprite("ghost-platform");
+                break;
+            case QUICK:
+                sprite.setSprite("quick-platform");
+                break;
+        }
+    }
 
     public boolean collideObject(GameObject go)
     {

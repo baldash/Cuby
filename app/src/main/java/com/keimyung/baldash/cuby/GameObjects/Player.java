@@ -11,11 +11,12 @@ public class Player extends GameObject
 {
 
     private boolean bJumping = false;
-    private float jumpStrength = 3.5f;
+    private float jumpStrength = 4.0f;
 
     public Player(PointF p)
     {
-        super("cuby", p);
+        super(p);
+        sprite.setSprite("cuby");
     }
 
     ///// GETTERS
@@ -31,7 +32,7 @@ public class Player extends GameObject
     {
         if (!bJumping)
         {
-            velocity.set(100, -250);
+            velocity.set(120, -250);
             gravity.set(0, 120);
 
             bJumping = true;
@@ -44,6 +45,12 @@ public class Player extends GameObject
 
         gravity.set(0, 0);
         velocity.set(platform.getVelocity());
+    }
+
+    public void offPlatform()
+    {
+        gravity.set(0, 120);
+        velocity.set(0, 820);
     }
 
     ///// OVERRIDES

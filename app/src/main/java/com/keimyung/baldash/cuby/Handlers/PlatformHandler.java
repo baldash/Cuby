@@ -2,6 +2,7 @@ package com.keimyung.baldash.cuby.Handlers;
 
 import android.graphics.PointF;
 
+import com.keimyung.baldash.cuby.GameObjects.GhostPlatform;
 import com.keimyung.baldash.cuby.GameObjects.Platform;
 import com.keimyung.baldash.cuby.MainThread;
 import com.keimyung.baldash.cuby.Misc.EPlatformType;
@@ -46,16 +47,34 @@ public class PlatformHandler
     {
         if (coolDown == 0)
         {
-            EntitiesHandler.getInstance().addEntity("platform " + platformID, new Platform(nextPlatformType, platPos, platSpeed));
-
+            createPlatform(nextPlatformType, platPos, platSpeed);
             coolDown = maxCoolDown;
             generateNextPlatformType();
             platformID++;
         }
     }
 
-    private void generateNextPlatformType()
+    public void generateNextPlatformType()
     {
         nextPlatformType = EPlatformType.getRandomType();
+    }
+
+    public void createPlatform(EPlatformType type, PointF pos, Vector2d speed)
+    {
+        switch (type)
+        {
+            case BASIC:
+                EntitiesHandler.getInstance().addEntity("platform " + platformID, new Platform(nextPlatformType, pos, speed));
+                break;
+            case GHOST:
+                EntitiesHandler.getInstance().addEntity("platform " + platformID, new GhostPlatform(pos, speed));
+                break;
+            case MOVING_H:
+                EntitiesHandler.getInstance().addEntity("platform " + platformID, new Platform(nextPlatformType, pos, speed));
+                break;
+            case QUICK:
+                EntitiesHandler.getInstance().addEntity("platform " + platformID, new Platform(nextPlatformType, pos, speed));
+                break;
+        }
     }
 }

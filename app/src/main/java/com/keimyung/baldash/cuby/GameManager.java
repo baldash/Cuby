@@ -93,7 +93,10 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     public void initResources()
     {
         ResourcesHandler.getInstance().addResource(R.drawable.cubypng, "cuby");
-        ResourcesHandler.getInstance().addResource(R.drawable.basicplatform, "basicPlatform");
+        ResourcesHandler.getInstance().addResource(R.drawable.basicplatform, "basic-platform");
+        ResourcesHandler.getInstance().addResource(R.drawable.moving_h_platform, "moving-h-platform");
+        ResourcesHandler.getInstance().addResource(R.drawable.ghost_platform, "ghost-platform");
+        ResourcesHandler.getInstance().addResource(R.drawable.quick_platform, "quick-platform");
     }
 
     public void update()
@@ -218,6 +221,8 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     public void startGame()
     {
         bStarted = true;
+        platformHandler.generateNextPlatformType();
+        updatePlatformIcon();
         togglePlatformIcon(true);
     }
 

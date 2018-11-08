@@ -19,6 +19,7 @@ import com.keimyung.baldash.cuby.Handlers.EntitiesHandler;
 import com.keimyung.baldash.cuby.Handlers.InputManager;
 import com.keimyung.baldash.cuby.Handlers.PlatformHandler;
 import com.keimyung.baldash.cuby.Handlers.ResourcesHandler;
+import com.keimyung.baldash.cuby.Misc.Constants;
 import com.keimyung.baldash.cuby.Misc.EPlatformType;
 
 import java.text.DecimalFormat;
@@ -55,7 +56,6 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
         gameActivity = (Activity)context;
 
-        // inputs
         inputManager = new InputManager(this);
         gestureDetectorCompat = new GestureDetectorCompat(context, inputManager);
         platformHandler = new PlatformHandler();
@@ -64,8 +64,6 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         getHolder().addCallback(this);
         thread = new MainThread(getHolder(), this);
         setFocusable(true);
-
-        gameSpeed = new Vector2d(-80, 0);
 
         scoreUiThread = new Runnable() {
             @Override
@@ -87,12 +85,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
             }
         };
 
-        // create player and start platform
-        player = new Player(new PointF(75, 425));
-        EntitiesHandler.getInstance().addEntity("player", player);
-
-        StartPlatform startPlatform = new StartPlatform(new PointF(0, 500), new Vector2d(0, 0));
-        EntitiesHandler.getInstance().addEntity("start-platform", startPlatform);
+        initGame();
     }
 
     ///// GETTERS
@@ -132,6 +125,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     {
         if (bStarted)
         {
+            checkPlayerDeath();
             platformHandler.update();
             updateDistance();
             updateCoolDownText();
@@ -250,6 +244,32 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     public void togglePlatformIcon(boolean visible)
     {
         platformIcon.setVisibility(visible ? VISIBLE : INVISIBLE);
+    }
+
+    private void gameOver()
+    {
+        stopGame();
+        EntitiesHandler.getInstance().reset();
+    }
+
+    private void initGame()
+    {
+        gameSpeed = new Vector2d(-80, 0);
+
+        // create player and start platform
+        player = new Player(new PointF(75, 425));
+        EntitiesHandler.getInstance().addEntity("player", player);
+
+        StartPlatform startPlatform = new StartPlatform(new PointF(0, 500), new Vector2d(0, 0));
+        EntitiesHandler.getInstance().addEntity("start-platform", startPlatform);
+    }
+
+    private void checkPlayerDeath()
+    {
+        if ((player.getSprite().getPos().x + player.getSprite().getWidth()) < 0 ||
+            player .getSprite().getPos().x > Constants.SCREEN_WIDTH ||
+            player.getSprite().getPos().y > Constants.SCREEN_HEIGHT)
+            gameOver();
     }
 
     ///// OVERRIDES

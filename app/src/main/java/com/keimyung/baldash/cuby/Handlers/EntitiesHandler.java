@@ -94,4 +94,9 @@ public class EntitiesHandler {
         }
     }
 
+    public void reset()
+    {
+        entities.clear();
+    }
+
 }

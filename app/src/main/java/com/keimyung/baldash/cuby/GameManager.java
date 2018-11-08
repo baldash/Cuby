@@ -9,6 +9,7 @@ import android.support.v4.view.GestureDetectorCompat;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,9 +45,11 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     private TextView scoreText;
     private TextView coolDownText;
     private ImageView platformIcon;
+    private Button retryButton;
 
     private Runnable scoreUiThread;
     private Runnable coolDownUiThread;
+    private Runnable retryButtonUiThread;
 
     public GameManager(Context context)
     {
@@ -85,6 +88,13 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
             }
         };
 
+        retryButtonUiThread = new Runnable() {
+            @Override
+            public void run() {
+                retryButton.setVisibility(VISIBLE);
+            }
+        };
+
         initGame();
     }
 
@@ -102,11 +112,12 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
     ///// SETTERS
 
-    public void setHUDElements(TextView scoreText, TextView cooldownText, ImageView platformIcon)
+    public void setHUDElements(TextView scoreText, TextView coolDownText, ImageView platformIcon, Button retryButton)
     {
         this.scoreText = scoreText;
-        this.coolDownText = cooldownText;
+        this.coolDownText = coolDownText;
         this.platformIcon = platformIcon;
+        this.retryButton = retryButton;
     }
 
     ///// METHODS
@@ -250,11 +261,13 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     {
         stopGame();
         EntitiesHandler.getInstance().reset();
+        gameActivity.runOnUiThread(retryButtonUiThread);
     }
 
-    private void initGame()
+    public void initGame()
     {
         gameSpeed = new Vector2d(-80, 0);
+        totalDistance = 0;
 
         // create player and start platform
         player = new Player(new PointF(75, 425));
@@ -262,6 +275,9 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
         StartPlatform startPlatform = new StartPlatform(new PointF(0, 500), new Vector2d(0, 0));
         EntitiesHandler.getInstance().addEntity("start-platform", startPlatform);
+
+        if (scoreText != null)
+            gameActivity.runOnUiThread(scoreUiThread);
     }
 
     private void checkPlayerDeath()

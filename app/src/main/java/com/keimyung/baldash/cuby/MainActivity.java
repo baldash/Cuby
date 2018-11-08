@@ -28,6 +28,7 @@ public class MainActivity extends Activity
     TextView coolDownText;
     ImageView platformPlaceholder;
     ImageView platformIcon;
+    Button retryButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class MainActivity extends Activity
         initLayouts();
 
         setContentView(frameLayout);
-        gameManager.setHUDElements(scoreText, coolDownText, platformIcon);
+        gameManager.setHUDElements(scoreText, coolDownText, platformIcon, retryButton);
 
         jumpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,6 +48,14 @@ public class MainActivity extends Activity
                 if (!gameManager.gameStarted())
                     gameManager.startGame();
                 gameManager.getPlayer().doJump();
+            }
+        });
+
+        retryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gameManager.initGame();
+                retryButton.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -70,6 +79,7 @@ public class MainActivity extends Activity
         scoreText = new TextView(this);
         coolDownText = new TextView(this);
         platformIcon = new ImageView(this);
+        retryButton = new Button(this);
         platformPlaceholder = new ImageView(this);
 
         gameManager = new GameManager(this);
@@ -95,12 +105,17 @@ public class MainActivity extends Activity
         platformIcon.setId(R.id.nexPlatformIconId);
         platformIcon.setImageResource(R.drawable.basicplatform);
         platformIcon.setVisibility(View.INVISIBLE);
+        
+        retryButton.setId(R.id.retryButtonId);
+        retryButton.setBackgroundResource(R.drawable.reload_arrow);
+        retryButton.setVisibility(View.INVISIBLE);
 
         RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(230, 230);
         RelativeLayout.LayoutParams scoreTextParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         RelativeLayout.LayoutParams coolDownTextParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         RelativeLayout.LayoutParams platformPlaceholderParams = new RelativeLayout.LayoutParams(155, 155);
         RelativeLayout.LayoutParams platformIconParams = new RelativeLayout.LayoutParams(115, 115);
+        RelativeLayout.LayoutParams retryButtonParams = new RelativeLayout.LayoutParams(250, 250);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
 
         relativeLayout.setLayoutParams(layoutParams);
@@ -109,6 +124,7 @@ public class MainActivity extends Activity
         relativeLayout.addView(platformIcon);
         relativeLayout.addView(platformPlaceholder);
         relativeLayout.addView(coolDownText);
+        relativeLayout.addView(retryButton);
 
         buttonParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         buttonParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -136,6 +152,10 @@ public class MainActivity extends Activity
         platformIconParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         platformIconParams.setMargins(0, 30, 0, 0);
         platformIcon.setLayoutParams(platformIconParams);
+
+        retryButtonParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        retryButtonParams.addRule(RelativeLayout.CENTER_VERTICAL);
+        retryButton.setLayoutParams(retryButtonParams);
 
         frameLayout.addView(gameManager);
         frameLayout.addView(relativeLayout);

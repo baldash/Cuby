@@ -44,6 +44,9 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     private TextView coolDownText;
     private ImageView platformIcon;
 
+    private Runnable scoreUiThread;
+    private Runnable coolDownUiThread;
+
     public GameManager(Context context)
     {
         super(context);
@@ -63,6 +66,26 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         setFocusable(true);
 
         gameSpeed = new Vector2d(-80, 0);
+
+        scoreUiThread = new Runnable() {
+            @Override
+            public void run() {
+                scoreText.setText(new DecimalFormat("#").format(totalDistance));
+            }
+        };
+
+        coolDownUiThread = new Runnable() {
+            @Override
+            public void run() {
+                if (platformHandler.getCoolDown() == 0)
+                    coolDownText.setVisibility(INVISIBLE);
+                else
+                {
+                    coolDownText.setVisibility(VISIBLE);
+                    coolDownText.setText(new DecimalFormat("#.#").format(platformHandler.getCoolDown()));
+                }
+            }
+        };
 
         // create player and start platform
         player = new Player(new PointF(75, 425));
@@ -169,28 +192,12 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
     private void updateScoreText()
     {
-        gameActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                scoreText.setText(new DecimalFormat("#").format(totalDistance));
-            }
-        });
+        gameActivity.runOnUiThread(scoreUiThread);
     }
 
     private void updateCoolDownText()
     {
-        gameActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (platformHandler.getCoolDown() == 0)
-                    coolDownText.setVisibility(INVISIBLE);
-                else
-                {
-                    coolDownText.setVisibility(VISIBLE);
-                    coolDownText.setText(new DecimalFormat("#.#").format(platformHandler.getCoolDown()));
-                }
-            }
-        });
+        gameActivity.runOnUiThread(coolDownUiThread);
     }
 
     private void updatePlatformIcon()

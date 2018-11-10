@@ -39,6 +39,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     private Activity gameActivity;
 
     private Player player;
+    private GameObject skyBackground;
 
     private Vector2d gameSpeed;
     private double totalDistance = 0;
@@ -162,7 +163,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
     public void onInputUp(PointF pos)
     {
-        if (pos.x > 330)
+        if (pos.x > 330 && pos.x > (player.getSprite().getPos().x - 150))
         {
             platformHandler.placePlatform(pos, gameSpeed);
             updatePlatformIcon();
@@ -176,23 +177,29 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         scaledVelocity.scale(MainThread.getDeltaTime(), gameSpeed);
         totalDistance += scaledVelocity.x * -1;
 
-        if (totalDistance > 500 && gameSpeed.x > -130)
-            updateGameSpeed(-130);
-        else if (totalDistance > 1000 && gameSpeed.x > -180)
-            updateGameSpeed(-180);
-        else if (totalDistance > 2000 && gameSpeed.x > -230)
-            updateGameSpeed(-230);
-        else if (totalDistance > 3000 && gameSpeed.x > -300)
-            updateGameSpeed(-300);
+        if (totalDistance > 500 && gameSpeed.x > -150)
+            updateGameSpeed(-150, false);
+        else if (totalDistance > 1500 && gameSpeed.x > -200)
+            updateGameSpeed(-200, true);
+        else if (totalDistance > 3000 && gameSpeed.x > -250)
+            updateGameSpeed(-250, true);
+        else if (totalDistance > 7000 && gameSpeed.x > -300)
+            updateGameSpeed(-300, true);
+        else if (totalDistance > 15000 && gameSpeed.x > -370)
+            updateGameSpeed(-370, true);
+        else if (totalDistance > 25000 && gameSpeed.x > -450)
+            updateGameSpeed(-450, true);
 
         updateScoreText();
     }
 
-    public void updateGameSpeed(int newSpeed)
+    public void updateGameSpeed(int newSpeed, boolean bUpgradeDifficulty)
     {
         List<GameObject> platforms = EntitiesHandler.getInstance().getAllEntitiesOfName("platform");
 
         gameSpeed.x = newSpeed;
+        if (bUpgradeDifficulty)
+            platformHandler.upgradeDifficulty();
 
         if (!player.jumping())
             player.setVelocity(new Vector2d(newSpeed, 0));
@@ -282,7 +289,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
     public void initGame()
     {
-        gameSpeed = new Vector2d(-80, 0);
+        gameSpeed = new Vector2d(-120, 0);
         totalDistance = 0;
 
         // create player and start platform

@@ -9,14 +9,21 @@ import com.keimyung.baldash.cuby.GameObjects.QuickPlatform;
 import com.keimyung.baldash.cuby.MainThread;
 import com.keimyung.baldash.cuby.Misc.EPlatformType;
 
+import java.util.Random;
+
 import javax.vecmath.Vector2d;
 
 public class PlatformHandler
 {
     private float coolDown;
     private float maxCoolDown = 1.0f;
+
     private EPlatformType nextPlatformType;
+    private EPlatformType previousPlatform = EPlatformType.NONE;
     private int platformID = 0;
+
+    private int maxPlatformIdx = 1;
+    private int minPlatformIdx = 1;
 
     ///// GETTERS
 
@@ -50,6 +57,7 @@ public class PlatformHandler
         if (coolDown == 0)
         {
             createPlatform(nextPlatformType, platPos, platSpeed);
+            previousPlatform = nextPlatformType;
             coolDown = maxCoolDown;
             generateNextPlatformType();
             platformID++;
@@ -58,7 +66,11 @@ public class PlatformHandler
 
     public void generateNextPlatformType()
     {
-        nextPlatformType = EPlatformType.getRandomType();
+        Random random = new Random();
+
+        nextPlatformType = EPlatformType.values()[minPlatformIdx + random.nextInt(maxPlatformIdx)];
+        if (previousPlatform == EPlatformType.JUMPING && nextPlatformType == EPlatformType.JUMPING)
+            nextPlatformType = EPlatformType.BASIC;
     }
 
     public void createPlatform(EPlatformType type, PointF pos, Vector2d speed)
@@ -86,5 +98,13 @@ public class PlatformHandler
     public void resetCoolDown()
     {
         coolDown = 0;
+    }
+
+    public void upgradeDifficulty()
+    {
+        if (maxPlatformIdx < (EPlatformType.values().length - 1))
+            maxPlatformIdx++;
+        else if (minPlatformIdx < 3)
+            minPlatformIdx++;
     }
 }

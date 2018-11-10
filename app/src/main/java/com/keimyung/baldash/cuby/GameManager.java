@@ -132,7 +132,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
     public void initResources()
     {
-        ResourcesHandler.getInstance().addResource(R.drawable.cubypng, "cuby");
+        ResourcesHandler.getInstance().addResource(R.drawable.goodcubix, "cuby");
         ResourcesHandler.getInstance().addResource(R.drawable.basicplatform, "basic-platform");
         ResourcesHandler.getInstance().addResource(R.drawable.moving_v_platform, "moving-v-platform");
         ResourcesHandler.getInstance().addResource(R.drawable.ghost_platform, "ghost-platform");
@@ -269,6 +269,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     private void gameOver()
     {
         stopGame();
+        platformHandler.resetCoolDown();
         scoreText.setVisibility(INVISIBLE);
         EntitiesHandler.getInstance().reset();
         if ((int)totalDistance > personalBestScore)

@@ -82,4 +82,9 @@ public class PlatformHandler
                 break;
         }
     }
+
+    public void resetCoolDown()
+    {
+        coolDown = 0;
+    }
 }

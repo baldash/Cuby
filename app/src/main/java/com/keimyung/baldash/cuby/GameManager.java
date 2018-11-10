@@ -2,9 +2,11 @@ package com.keimyung.baldash.cuby;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PointF;
+import android.preference.PreferenceManager;
 import android.support.v4.view.GestureDetectorCompat;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -41,11 +43,13 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     private Vector2d gameSpeed;
     private double totalDistance = 0;
     private boolean bStarted = false;
+    private int personalBestScore = 0;
 
     private TextView scoreText;
     private TextView coolDownText;
     private ImageView platformIcon;
     private Button retryButton;
+    private TextView bestScoreText;
 
     private Runnable scoreUiThread;
     private Runnable coolDownUiThread;
@@ -92,10 +96,13 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
             @Override
             public void run() {
                 retryButton.setVisibility(VISIBLE);
+                bestScoreText.setText("Personal best: " + personalBestScore);
+                bestScoreText.setVisibility(VISIBLE);
             }
         };
 
         initGame();
+        retrieveBestScore();
     }
 
     ///// GETTERS
@@ -112,12 +119,13 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
     ///// SETTERS
 
-    public void setHUDElements(TextView scoreText, TextView coolDownText, ImageView platformIcon, Button retryButton)
+    public void setHUDElements(TextView scoreText, TextView coolDownText, ImageView platformIcon, Button retryButton, TextView bestScoreText)
     {
         this.scoreText = scoreText;
         this.coolDownText = coolDownText;
         this.platformIcon = platformIcon;
         this.retryButton = retryButton;
+        this.bestScoreText = bestScoreText;
     }
 
     ///// METHODS
@@ -242,6 +250,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     public void startGame()
     {
         bStarted = true;
+        scoreText.setVisibility(VISIBLE);
         platformHandler.generateNextPlatformType();
         updatePlatformIcon();
         togglePlatformIcon(true);
@@ -260,7 +269,13 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     private void gameOver()
     {
         stopGame();
+        scoreText.setVisibility(INVISIBLE);
         EntitiesHandler.getInstance().reset();
+        if ((int)totalDistance > personalBestScore)
+        {
+            personalBestScore = (int)totalDistance;
+            saveBestScore();
+        }
         gameActivity.runOnUiThread(retryButtonUiThread);
     }
 
@@ -286,6 +301,22 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
             player .getSprite().getPos().x > Constants.SCREEN_WIDTH ||
             player.getSprite().getPos().y > Constants.SCREEN_HEIGHT)
             gameOver();
+    }
+
+    private void saveBestScore()
+    {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(gameActivity);
+        SharedPreferences.Editor editor = sp.edit();
+
+        editor.putInt("best_score", personalBestScore);
+        editor.apply();
+    }
+
+    private void retrieveBestScore()
+    {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(gameActivity);
+
+        personalBestScore = sp.getInt("best_score", 0);
     }
 
     ///// OVERRIDES

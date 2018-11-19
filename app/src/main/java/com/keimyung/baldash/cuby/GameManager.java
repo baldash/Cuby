@@ -346,12 +346,12 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     {
         boolean retry = true;
 
-        while (true)
+        while (retry)
         {
             try {
-                thread.setRunning(true);
+                thread.setRunning(false);
                 thread.join();
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             retry = false;

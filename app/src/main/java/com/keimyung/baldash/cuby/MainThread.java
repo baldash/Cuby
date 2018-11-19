@@ -59,7 +59,8 @@ public class MainThread extends Thread {
                 canvas = holder.lockCanvas();
                 synchronized (holder) {
                     gameManager.update();
-                    gameManager.draw(canvas);
+                    if (canvas != null)
+                        gameManager.draw(canvas);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

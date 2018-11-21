@@ -3,8 +3,8 @@ package com.keimyung.baldash.cuby;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.PointF;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GestureDetectorCompat;
@@ -56,6 +56,8 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     private Runnable coolDownUiThread;
     private Runnable retryButtonUiThread;
 
+    private Bitmap bg;
+
     public GameManager(Context context)
     {
         super(context);
@@ -102,6 +104,13 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
             }
         };
 
+        Bitmap bgBitmap = ResourcesHandler.getInstance().getResourceByName("sky-background");
+
+        float scale = (float)bgBitmap.getHeight()/(float)Constants.SCREEN_HEIGHT;
+        int newWidth = Math.round(bgBitmap.getWidth()/scale);
+        int newHeight = Math.round(bgBitmap.getHeight()/scale);
+        bg = Bitmap.createScaledBitmap(bgBitmap, newWidth, newHeight, true);
+
         initGame();
         retrieveBestScore();
     }
@@ -139,6 +148,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         ResourcesHandler.getInstance().addResource(R.drawable.ghost_platform, "ghost-platform");
         ResourcesHandler.getInstance().addResource(R.drawable.quick_platform, "quick-platform");
         ResourcesHandler.getInstance().addResource(R.drawable.jumping_platform, "jumping-platform");
+        ResourcesHandler.getInstance().addResource(R.drawable.sky_background, "sky-background");
     }
 
     public void update()
@@ -157,7 +167,8 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     {
         super.draw(canvas);
 
-        canvas.drawColor(Color.WHITE);
+        //canvas.drawColor(Color.WHITE);
+        canvas.drawBitmap(bg, 0, 0, null);
         EntitiesHandler.getInstance().drawAll(canvas);
     }
 
@@ -256,6 +267,8 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
     public void startGame()
     {
+
+
         bStarted = true;
         scoreText.setVisibility(VISIBLE);
         platformHandler.generateNextPlatformType();

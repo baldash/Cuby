@@ -3,8 +3,8 @@ package com.keimyung.baldash.cuby;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
-public class MainThread extends Thread {
-
+public class MainThread extends Thread
+{
     public static final int MAX_FPS = 60;
     public static double averageFPS = 60;
     private SurfaceHolder holder;

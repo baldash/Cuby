@@ -12,7 +12,6 @@ import javax.vecmath.Vector2d;
 
 public class GhostPlatform extends Platform
 {
-
     private float maxLifeTime = 1.3f;
     private float lifeTime;
 

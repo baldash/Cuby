@@ -2,6 +2,7 @@ package com.keimyung.baldash.cuby.GameObjects;
 
 import android.graphics.Canvas;
 import android.graphics.PointF;
+import android.provider.Settings;
 
 import com.keimyung.baldash.cuby.MainThread;
 
@@ -9,7 +10,6 @@ import javax.vecmath.Vector2d;
 
 public class Player extends GameObject
 {
-
     private boolean bJumping = false;
     private float jumpStrength = 4.0f;
 
@@ -32,6 +32,8 @@ public class Player extends GameObject
     {
         if (!bJumping)
         {
+            System.out.println("player jumping");
+
             velocity.set(120, -250);
             gravity.set(0, 120);
 

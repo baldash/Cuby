@@ -90,7 +90,7 @@ public class MainActivity extends Activity
         relativeLayout = new RelativeLayout(this);
 
         jumpButton.setId(R.id.jumpButtonId);
-        jumpButton.setBackgroundResource(R.drawable.up_arrow_green);
+        jumpButton.setBackgroundResource(R.drawable.up_chevron_button);
 
         scoreText.setId(R.id.scoreTextId);
         scoreText.setText("0");

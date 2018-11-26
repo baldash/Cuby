@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.keimyung.baldash.cuby.GameObjects.GameObject;
 import com.keimyung.baldash.cuby.GameObjects.Player;
 import com.keimyung.baldash.cuby.GameObjects.StartPlatform;
+import com.keimyung.baldash.cuby.Handlers.CollectableHandler;
 import com.keimyung.baldash.cuby.Handlers.EntitiesHandler;
 import com.keimyung.baldash.cuby.Handlers.InputManager;
 import com.keimyung.baldash.cuby.Handlers.PlatformHandler;
@@ -36,12 +37,12 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     private GestureDetectorCompat gestureDetectorCompat;
     private InputManager inputManager;
     private PlatformHandler platformHandler;
+    private CollectableHandler collectableHandler;
     private Activity gameActivity;
 
     private Player player;
-    private GameObject skyBackground;
 
-    private Vector2d gameSpeed;
+    private static Vector2d gameSpeed;
     private double totalDistance = 0;
     private boolean bStarted = false;
     private int personalBestScore = 0;
@@ -69,6 +70,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         inputManager = new InputManager(this);
         gestureDetectorCompat = new GestureDetectorCompat(context, inputManager);
         platformHandler = new PlatformHandler();
+        collectableHandler = new CollectableHandler();
 
         // main thread
         getHolder().addCallback(this);
@@ -78,7 +80,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         scoreUiThread = new Runnable() {
             @Override
             public void run() {
-                scoreText.setText(new DecimalFormat("#").format(totalDistance));
+                scoreText.setText(new DecimalFormat("#").format(totalDistance + collectableHandler.getScoreBonus()));
             }
         };
 
@@ -127,6 +129,11 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         return bStarted;
     }
 
+    public static Vector2d getGameSpeed()
+    {
+        return gameSpeed;
+    }
+
     ///// SETTERS
 
     public void setHUDElements(TextView scoreText, TextView coolDownText, ImageView platformIcon, Button retryButton, TextView bestScoreText)
@@ -149,6 +156,9 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         ResourcesHandler.getInstance().addResource(R.drawable.quick_platform, "quick-platform");
         ResourcesHandler.getInstance().addResource(R.drawable.jumping_platform, "jumping-platform");
         ResourcesHandler.getInstance().addResource(R.drawable.sky_background, "sky-background");
+        ResourcesHandler.getInstance().addResource(R.drawable.big_bonus_collectable, "big-bonus-collectable");
+        ResourcesHandler.getInstance().addResource(R.drawable.normal_collectable, "normal-bonus-collectable");
+        ResourcesHandler.getInstance().addResource(R.drawable.malus_collectable, "malus-collectable");
     }
 
     public void update()
@@ -157,6 +167,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         {
             checkPlayerDeath();
             platformHandler.update();
+            collectableHandler.update();
             updateDistance();
             updateCoolDownText();
             EntitiesHandler.getInstance().updateAll();
@@ -167,7 +178,6 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     {
         super.draw(canvas);
 
-        //canvas.drawColor(Color.WHITE);
         canvas.drawBitmap(bg, 0, 0, null);
         EntitiesHandler.getInstance().drawAll(canvas);
     }
@@ -289,9 +299,10 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
     private void gameOver()
     {
         stopGame();
-        platformHandler.resetCoolDown();
+        platformHandler.reset();
         scoreText.setVisibility(INVISIBLE);
         EntitiesHandler.getInstance().reset();
+        totalDistance += collectableHandler.getScoreBonus();
         if ((int)totalDistance > personalBestScore)
         {
             personalBestScore = (int)totalDistance;

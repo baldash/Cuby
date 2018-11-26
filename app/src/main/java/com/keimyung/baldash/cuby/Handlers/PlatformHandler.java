@@ -108,4 +108,12 @@ public class PlatformHandler
         else if (minPlatformIdx < 3)
             minPlatformIdx++;
     }
+
+    public void reset()
+    {
+        maxPlatformIdx = 1;
+        minPlatformIdx = 1;
+        nextPlatformType = EPlatformType.NONE;
+        coolDown = 0;
+    }
 }

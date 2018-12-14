@@ -9,7 +9,6 @@ import javax.vecmath.Vector2d;
 
 public class StartPlatform extends Platform
 {
-
     public StartPlatform(PointF pos, Vector2d velocity)
     {
         super(EPlatformType.BASIC, pos, velocity);

@@ -18,6 +18,13 @@ public class CollectableHandler
     private int scoreBonus;
     private int collectableId;
 
+    private GameManager gameManager;
+
+    public CollectableHandler(GameManager gameManager)
+    {
+        this.gameManager = gameManager;
+    }
+
     ///// GETTERS
 
     public int getScoreBonus()
@@ -80,5 +87,6 @@ public class CollectableHandler
     public void addBonusPoints(int value)
     {
         scoreBonus += value;
+        gameManager.updateScoreText();
     }
 }

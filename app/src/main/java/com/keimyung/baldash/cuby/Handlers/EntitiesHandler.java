@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class EntitiesHandler {
 
-    private static final EntitiesHandler instance = new EntitiesHandler();
+    private static EntitiesHandler instance = null;
 
     private Map<String, GameObject> entities;
 
@@ -24,6 +24,8 @@ public class EntitiesHandler {
 
     public static EntitiesHandler getInstance()
     {
+        if (instance == null)
+            instance = new EntitiesHandler();
         return instance;
     }
 

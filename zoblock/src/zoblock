@@ -1,3 +1,0 @@
-zobdisp &
-xtrlock
-kill `pidof zobdisp`

@@ -5,7 +5,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.Typeface;
+import android.os.Debug;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GestureDetectorCompat;
 import android.view.MotionEvent;
@@ -23,6 +27,7 @@ import com.keimyung.baldash.cuby.Handlers.EntitiesHandler;
 import com.keimyung.baldash.cuby.Handlers.InputManager;
 import com.keimyung.baldash.cuby.Handlers.PlatformHandler;
 import com.keimyung.baldash.cuby.Handlers.ResourcesHandler;
+import com.keimyung.baldash.cuby.Handlers.SoundManager;
 import com.keimyung.baldash.cuby.Misc.Constants;
 import com.keimyung.baldash.cuby.Misc.EPlatformType;
 
@@ -59,28 +64,35 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
     private Bitmap bg;
 
+    int previousCD = -1;
+
     public GameManager(Context context)
     {
         super(context);
 
-        initResources();
-
         gameActivity = (Activity)context;
+
+        SoundManager.getInstance().setContext(context);
+        SoundManager.getInstance().initSounds();
+        ResourcesHandler.getInstance().initResources();
 
         inputManager = new InputManager(this);
         gestureDetectorCompat = new GestureDetectorCompat(context, inputManager);
         platformHandler = new PlatformHandler();
-        collectableHandler = new CollectableHandler();
+        collectableHandler = new CollectableHandler(this);
 
         // main thread
         getHolder().addCallback(this);
         thread = new MainThread(getHolder(), this);
         setFocusable(true);
 
+        // UI threads
         scoreUiThread = new Runnable() {
             @Override
             public void run() {
-                scoreText.setText(new DecimalFormat("#").format(totalDistance + collectableHandler.getScoreBonus()));
+                int displayScore = (collectableHandler.getScoreBonus() >= 0) ? collectableHandler.getScoreBonus() : 0;
+
+                scoreText.setText(Integer.toString(displayScore));
             }
         };
 
@@ -106,6 +118,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
             }
         };
 
+        // Background creation
         Bitmap bgBitmap = ResourcesHandler.getInstance().getResourceByName("sky-background");
 
         float scale = (float)bgBitmap.getHeight()/(float)Constants.SCREEN_HEIGHT;
@@ -147,20 +160,6 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
     ///// METHODS
 
-    public void initResources()
-    {
-        ResourcesHandler.getInstance().addResource(R.drawable.goodcubix, "cuby");
-        ResourcesHandler.getInstance().addResource(R.drawable.basicplatform, "basic-platform");
-        ResourcesHandler.getInstance().addResource(R.drawable.moving_v_platform, "moving-v-platform");
-        ResourcesHandler.getInstance().addResource(R.drawable.ghost_platform, "ghost-platform");
-        ResourcesHandler.getInstance().addResource(R.drawable.quick_platform, "quick-platform");
-        ResourcesHandler.getInstance().addResource(R.drawable.jumping_platform, "jumping-platform");
-        ResourcesHandler.getInstance().addResource(R.drawable.sky_background, "sky-background");
-        ResourcesHandler.getInstance().addResource(R.drawable.big_bonus_collectable, "big-bonus-collectable");
-        ResourcesHandler.getInstance().addResource(R.drawable.normal_collectable, "normal-bonus-collectable");
-        ResourcesHandler.getInstance().addResource(R.drawable.malus_collectable, "malus-collectable");
-    }
-
     public void update()
     {
         if (bStarted)
@@ -169,7 +168,16 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
             platformHandler.update();
             collectableHandler.update();
             updateDistance();
-            updateCoolDownText();
+
+            int actualCD = (int)(platformHandler.getCoolDown() * 10);
+
+            System.out.println("actual cd: " + actualCD);
+
+            if (actualCD < previousCD || previousCD == -1 ||
+                    platformHandler.getCoolDown() == 0 && coolDownText.getVisibility() == VISIBLE)
+                updateCoolDownText();
+
+            previousCD = actualCD;
             EntitiesHandler.getInstance().updateAll();
         }
     }
@@ -209,9 +217,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         else if (totalDistance > 15000 && gameSpeed.x > -370)
             updateGameSpeed(-370, true);
         else if (totalDistance > 25000 && gameSpeed.x > -450)
-            updateGameSpeed(-450, true);
-
-        updateScoreText();
+            updateGameSpeed(-450, false);
     }
 
     public void updateGameSpeed(int newSpeed, boolean bUpgradeDifficulty)
@@ -221,17 +227,9 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         gameSpeed.x = newSpeed;
         if (bUpgradeDifficulty)
             platformHandler.upgradeDifficulty();
-
-        if (!player.jumping())
-            player.setVelocity(new Vector2d(newSpeed, 0));
-
-        for (GameObject platform: platforms)
-        {
-            platform.setVelocity(new Vector2d(newSpeed, 0));
-        }
     }
 
-    private void updateScoreText()
+    public void updateScoreText()
     {
         gameActivity.runOnUiThread(scoreUiThread);
     }
@@ -277,8 +275,6 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
     public void startGame()
     {
-
-
         bStarted = true;
         scoreText.setVisibility(VISIBLE);
         platformHandler.generateNextPlatformType();
@@ -298,14 +294,15 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
     private void gameOver()
     {
+        SoundManager.getInstance().playSound("death");
         stopGame();
         platformHandler.reset();
         scoreText.setVisibility(INVISIBLE);
         EntitiesHandler.getInstance().reset();
-        totalDistance += collectableHandler.getScoreBonus();
-        if ((int)totalDistance > personalBestScore)
+        //totalDistance += collectableHandler.getScoreBonus();
+        if (collectableHandler.getScoreBonus() > personalBestScore)
         {
-            personalBestScore = (int)totalDistance;
+            personalBestScore = collectableHandler.getScoreBonus();
             saveBestScore();
         }
         gameActivity.runOnUiThread(retryButtonUiThread);
@@ -317,7 +314,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         totalDistance = 0;
 
         // create player and start platform
-        player = new Player(new PointF(75, 425));
+        player = new Player(new PointF(75, 425), collectableHandler);
         EntitiesHandler.getInstance().addEntity("player", player);
 
         StartPlatform startPlatform = new StartPlatform(new PointF(0, 500), new Vector2d(0, 0));
@@ -325,6 +322,9 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
         if (scoreText != null)
             gameActivity.runOnUiThread(scoreUiThread);
+
+        SoundManager.getInstance().getSound("main-theme").setLooping(true);
+        SoundManager.getInstance().playSound("main-theme");
     }
 
     private void checkPlayerDeath()

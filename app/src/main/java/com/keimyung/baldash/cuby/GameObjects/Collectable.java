@@ -6,6 +6,7 @@ import android.graphics.RectF;
 
 import com.keimyung.baldash.cuby.Handlers.CollectableHandler;
 import com.keimyung.baldash.cuby.Handlers.EntitiesHandler;
+import com.keimyung.baldash.cuby.Handlers.SoundManager;
 import com.keimyung.baldash.cuby.Misc.ECollectableType;
 
 import javax.vecmath.Vector2d;
@@ -67,12 +68,15 @@ public class Collectable extends GameObject
             switch (type)
             {
                 case BONUS:
+                    SoundManager.getInstance().playSound("bonus-collectable");
                     handler.addBonusPoints(1000);
                     break;
                 case BONUSL:
+                    SoundManager.getInstance().playSound("bonus-collectable");
                     handler.addBonusPoints(3500);
                     break;
                 case MALUS:
+                    SoundManager.getInstance().playSound("malus-collectable");
                     handler.addBonusPoints(-1500);
                     break;
             }

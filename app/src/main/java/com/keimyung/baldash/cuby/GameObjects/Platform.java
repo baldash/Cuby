@@ -5,6 +5,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
+import com.keimyung.baldash.cuby.Handlers.SoundManager;
 import com.keimyung.baldash.cuby.Misc.EPlatformType;
 import com.keimyung.baldash.cuby.Handlers.EntitiesHandler;
 
@@ -106,6 +107,7 @@ public class Platform extends GameObject {
         {
             bPlayerIsOn = true;
             playerInstance.onPlatform(this);
+            SoundManager.getInstance().playSound("land");
         }
 
         if (playerInstance.jumping())

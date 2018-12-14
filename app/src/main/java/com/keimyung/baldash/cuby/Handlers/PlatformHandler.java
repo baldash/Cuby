@@ -70,7 +70,8 @@ public class PlatformHandler
         Random random = new Random();
 
         nextPlatformType = EPlatformType.values()[minPlatformIdx + random.nextInt(maxPlatformIdx)];
-        if (previousPlatform == EPlatformType.JUMPING && nextPlatformType == EPlatformType.JUMPING)
+        if ((previousPlatform == EPlatformType.JUMPING || previousPlatform == EPlatformType.GHOST)
+                && nextPlatformType == EPlatformType.JUMPING)
             nextPlatformType = EPlatformType.BASIC;
     }
 

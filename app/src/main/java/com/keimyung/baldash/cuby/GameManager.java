@@ -222,9 +222,8 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
 
     public void updateGameSpeed(int newSpeed, boolean bUpgradeDifficulty)
     {
-        List<GameObject> platforms = EntitiesHandler.getInstance().getAllEntitiesOfName("platform");
-
         gameSpeed.x = newSpeed;
+
         if (bUpgradeDifficulty)
             platformHandler.upgradeDifficulty();
     }
@@ -299,7 +298,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback {
         platformHandler.reset();
         scoreText.setVisibility(INVISIBLE);
         EntitiesHandler.getInstance().reset();
-        //totalDistance += collectableHandler.getScoreBonus();
+        collectableHandler.reset();
         if (collectableHandler.getScoreBonus() > personalBestScore)
         {
             personalBestScore = collectableHandler.getScoreBonus();

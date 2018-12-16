@@ -89,4 +89,10 @@ public class CollectableHandler
         scoreBonus += value;
         gameManager.updateScoreText();
     }
+
+    public void reset()
+    {
+        scoreBonus = 0;
+        totalTime = 0;
+    }
 }

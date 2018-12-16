@@ -95,12 +95,12 @@ public class MainActivity extends Activity
         scoreText.setId(R.id.scoreTextId);
         scoreText.setText("0");
         scoreText.setTextSize(25);
-        scoreText.setTextColor(Color.BLUE);
+        scoreText.setTextColor(Color.WHITE);
         
         coolDownText.setId(R.id.countDownTextId);
         coolDownText.setText("0");
         coolDownText.setTextSize(25);
-        coolDownText.setTextColor(Color.BLUE);
+        coolDownText.setTextColor(Color.WHITE);
 
         platformPlaceholder.setId(R.id.platformPlaceholderId);
         platformPlaceholder.setImageResource(R.drawable.platform_placeholder);
@@ -116,7 +116,7 @@ public class MainActivity extends Activity
         bestScore.setId(R.id.bestScoreId);
         bestScore.setText("Personal best: " + 0);
         bestScore.setTextSize(22);
-        bestScore.setTextColor(Color.MAGENTA);
+        bestScore.setTextColor(Color.YELLOW);
         bestScore.setVisibility(View.INVISIBLE);
 
         RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(230, 230);

@@ -87,6 +87,7 @@ public class CollectableHandler
     public void addBonusPoints(int value)
     {
         scoreBonus += value;
+        scoreBonus = (scoreBonus < 0) ? 0 : scoreBonus;
         gameManager.updateScoreText();
     }
 
